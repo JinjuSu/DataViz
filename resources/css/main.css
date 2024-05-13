@@ -75,3 +75,25 @@ p {
 .right-align {
   text-align: right; /* Aligns content to the right */
 }
+
+/* Line Chart Style */
+.line {
+  fill: none;
+  stroke: slategrey;
+  stroke-width: 0.5;
+}
+
+.halfMilMark {
+  stroke: red;
+  stroke-dasharray: 2, 3;
+}
+
+.halfMilLabel {
+  font-family: Helvetica, sans-serif;
+  font-size: 12px;
+  fill: red;
+}
+.area {
+  fill: slategrey;
+  stroke: none;
+}
