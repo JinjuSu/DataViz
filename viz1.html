@@ -8,9 +8,9 @@
 
     <title>Australia's Death proportions</title>
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
 
-    <script src="resources/js/viz1.js"></script>
+    <script src="resources/js/viz1.js" defer></script>
 
     <!-- main.css -->
     <link rel="stylesheet" href="resources/css/main.css">
@@ -23,11 +23,10 @@
       <!-- Page layout -->
       <h1>Line chart presenting number of deaths in Australia in 2001 - 2003</h1>
 
-      <img src="https://www.tableau.com/sites/default/files/2021-09/Line%20Chart%201%20-%20Good%20-%20900x650.png" alt="Line chart mock">
 
         <!-- Visualization-->
         <div class="chart-container my-5">
-          <p id="pie-chart"></p>
+          <p id="line-chart"></p>
         </div>
 
 
@@ -40,12 +39,12 @@
         <!-- Buttons -->
         <div class="row my-5">
           <div class="col-4">
-            <button class="btn btn-lg btn-dark btn-outline-warning text-uppercase fs-5 fw-bold">
+            <button class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold">
               Previous
             </button>
           </div>
           <div class="col-4 ms-auto right-align">
-            <button class="btn btn-lg btn-warning text-uppercase fs-5 fw-bold">
+            <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold">
               Next
             </button>
           </div>
