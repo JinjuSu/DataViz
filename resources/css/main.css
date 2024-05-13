@@ -13,7 +13,7 @@ h1 {
   font-weight: bold;
 }
 
-h2#viz-title {
+h2 #viz-title {
   text-align: center; /* Centers the title text */
 }
 
@@ -21,6 +21,7 @@ h2 {
   font-size: 50px;
   font-weight: bold;
 }
+
 h3 {
   font-size: 36px;
 }
@@ -69,4 +70,8 @@ p {
   height: 20px;
   border: 2px solid black; /* Black outline around the color box */
   margin-right: 10px; /* Space between the color box and the text */
+}
+
+.right-align {
+  text-align: right; /* Aligns content to the right */
 }
