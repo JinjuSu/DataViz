@@ -106,7 +106,11 @@ function init() {
       .style("pointer-events", "none");
 
     // create a listening rectangle
-    const listeningRect = svg.append("rect").attr("width", w).attr("height", h);
+    const listeningRect = svg
+      .append("rect")
+      .attr("width", w)
+      .attr("height", h)
+      .style("pointer-events", "all");
 
     // create the mouse move function
     listeningRect.on("mousemove", function (event) {
@@ -138,6 +142,13 @@ function init() {
         );
     });
 
+    // listening rectangle mouse leave function
+
+    listeningRect.on("mouseleave", function () {
+      circle.transition().duration(50).attr("r", 0);
+      tooltip.style("display", "none");
+    });
+
     // Add the chart title
 
     svg
@@ -150,7 +161,7 @@ function init() {
       .style("font-weight", "bold")
       .style("font-family", "sans-serif")
       .text(
-        "Prison Populations in the US Have Trended Upward Since Summer 2020"
+        "Line chart presenting number of deaths in Australia in 2015 - 2021"
       );
 
     // Add Y-axis label
@@ -174,7 +185,7 @@ function init() {
       .attr("y", h + margin.bottom - 3)
       .style("font-size", "18px")
       .style("font-family", "sans-serif")
-      .text("Source: Causes of Mortality, OECD Health Stats");
+      .text("Source: Causes of Mortality, OECD Health Stats 2022");
   });
 }
 
