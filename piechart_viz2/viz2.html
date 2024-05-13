@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Data Visualization">
+    <meta name="keywords" content="HTML, CSS, D3, Javascript">
+    <meta name="name" content="Darrell Devlin">
+
+    <title>Australia's Death proportions</title>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <script src="viz2.js"></script>
+
+    <link rel="stylesheet" href="viz2.css">
+
+</head>
+<body>
+    <div class="content">
+        <!-- Title of Vizualiation 2-->
+        <h2 id="viz-title">Proportion of Avoidable vs Unavoidable Deaths in Australia (2000 - 2023)</h2>
+
+        <div class="flex-container">
+            <!-- Description of Visualization-->
+            <div class="description">
+                <p>This visualization provides a clear and comprehensive overview of 
+                    the proportion of deaths that are classified as avoidable versus unavoidable. 
+                    By examining data over several years, this chart illustrates trends and insights 
+                    into how different factors impact mortality rates. The data is sourced from 
+                    reputable health databases and is intended to foster better understanding and 
+                    awareness among policymakers and the public about potential areas for intervention 
+                    and improvement in healthcare services.
+                </p>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="color-box" style="background-color: #FF6347;"></span> Avoidable deaths
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box" style="background-color: #4682B4;"></span> Unavoidable deaths
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Visualization-->
+            <div class="chart-container">
+                <p id="pie-chart"></p>
+            </div>
+        </div>
+    </div>
+        
+
+</body>
+</html>
