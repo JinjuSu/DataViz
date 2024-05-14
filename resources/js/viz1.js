@@ -4,7 +4,7 @@ function init() {
   //   const height = 500 - margin.top - margin.bottom;
 
   var w = 1200 - margin.left - margin.right;
-  var h = 500 - margin.top - margin.bottom;
+  var h = 600 - margin.top - margin.bottom;
 
   var padding = 50;
 
@@ -14,8 +14,44 @@ function init() {
 
   const tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
+  function wrapText(text, width) {
+    text.each(function () {
+      var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy") || 0),
+        tspan = text
+          .text(null)
+          .append("tspan")
+          .attr("x", w)
+          .attr("y", yScale)
+          .attr("dy", dy + "em");
+
+      while ((word = words.pop())) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop(); // remove the word that overflowed
+          tspan.text(line.join(" ")); // set back the text without the overflowed word
+          line = [word]; // start a new line with the overflowed word
+          tspan = text
+            .append("tspan") // create a new tspan for the new line
+            .attr("x", w)
+            .attr("y", yScale)
+            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+            .text(word);
+        }
+      }
+    });
+  }
+
   // Import csv file from the Relative Path
-  d3.csv("./resources/dataset/oecd/causes_of_mortality.csv", function (d) {
+  //   d3.csv("resources/dataset/oecd/causes_of_mortality.csv", function (d) {
+  d3.csv("resources/dataset/aihw/cleaned_total_deaths.csv", function (d) {
     return {
       year: new Date(d.year, 0, 1),
       deaths: +d.deaths,
@@ -39,7 +75,7 @@ function init() {
     yScale = d3
       .scaleLinear()
       .domain([
-        600,
+        0,
         d3.max(dataset, function (d) {
           return d.deaths;
         }),
@@ -47,16 +83,14 @@ function init() {
       .range([h - padding, 0]);
 
     //Define axes
-    xAxis = d3.axisBottom().scale(xScale).ticks(7).tickFormat(formatTime);
+    xAxis = d3.axisBottom().scale(xScale).ticks(10).tickFormat(formatTime);
 
     //Define Y axis
-    yAxis = d3
-      .axisLeft()
-      .scale(yScale)
-      .ticks((d3.max(data, (d) => d.deaths) - 600) / 50)
-      .tickFormat((d) => {
-        return `${d}k`;
-      });
+    yAxis = d3.axisLeft().scale(yScale);
+    //   .ticks((d3.max(data, (d) => d.deaths) - 40000) / 5000);
+    //   .tickFormat((d) => {
+    //     return `${d}k`;
+    //   });
 
     //Define line generator
     line = d3
@@ -88,13 +122,17 @@ function init() {
       .append("g")
       .attr("class", "axis")
       .attr("transform", "translate(0," + (h - padding) + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .selectAll("text") // selects all text elements in the yAxis group
+      .style("font-size", "14px");
 
     svg
       .append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + padding + ",0)")
-      .call(yAxis);
+      .call(yAxis)
+      .selectAll("text") // selects all text elements in the yAxis group
+      .style("font-size", "14px");
 
     // Add a circle element
     const circle = svg
@@ -154,15 +192,16 @@ function init() {
     svg
       .append("text")
       .attr("class", "chart-title")
-      .attr("x", w / 2 + margin.left)
+      .attr("x", margin.left)
       .attr("y", -10)
-      .attr("text-anchor", "middle") // Center text alignment
-      .style("font-size", "22px")
+      .attr("text-anchor", "start") // Center text alignment
+      .style("font-size", "50px")
       .style("font-weight", "bold")
       .style("font-family", "sans-serif")
       .text(
-        "Line chart presenting number of deaths in Australia in 2015 - 2021"
-      );
+        "Line chart presenting number of deaths in Australia in 1907 - 2021"
+      )
+      .call(wrapText, w);
 
     // Add Y-axis label
     svg
@@ -172,7 +211,7 @@ function init() {
       .attr("x", 0 - h / 2)
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .style("font-size", "14px")
+      .style("font-size", "22px")
       .style("fill", "#777")
       .style("font-family", "sans-serif")
       .text("Total Deaths");
@@ -183,7 +222,7 @@ function init() {
       .attr("class", "source-credit")
       .attr("x", w - 1125)
       .attr("y", h + margin.bottom - 3)
-      .style("font-size", "18px")
+      .style("font-size", "14px")
       .style("font-family", "sans-serif")
       .text("Source: Causes of Mortality, OECD Health Stats 2022");
   });
