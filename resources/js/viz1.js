@@ -192,16 +192,15 @@ function init() {
     svg
       .append("text")
       .attr("class", "chart-title")
-      .attr("x", margin.left)
-      .attr("y", -10)
+      .attr("x", 0)
+      .attr("y", -50)
       .attr("text-anchor", "start") // Center text alignment
-      .style("font-size", "50px")
+      .style("font-size", "26px")
       .style("font-weight", "bold")
       .style("font-family", "sans-serif")
       .text(
         "Line chart presenting number of deaths in Australia in 1907 - 2021"
-      )
-      .call(wrapText, w);
+      );
 
     // Add Y-axis label
     svg
@@ -224,7 +223,9 @@ function init() {
       .attr("y", h + margin.bottom - 3)
       .style("font-size", "14px")
       .style("font-family", "sans-serif")
-      .text("Source: Causes of Mortality, OECD Health Stats 2022");
+      .text(
+        "Source:  Deaths by broad cause of death, number and rates (deaths per 100,000 population), 1907–2021, Australia Instituion of Health and Welfare"
+      );
   });
 }
 
