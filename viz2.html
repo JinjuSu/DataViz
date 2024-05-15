@@ -1,57 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Data Visualization" />
-    <meta name="keywords" content="HTML, CSS, D3, Javascript" />
-    <meta name="name" content="Darrell Devlin" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Data Visualization">
+    <meta name="keywords" content="HTML, CSS, D3, Javascript">
+    <meta name="name" content="Darrell Devlin">
 
     <title>Australia's Death proportions</title>
 
+    <!-- Javascript -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-
     <script src="resources/js/viz2.js"></script>
 
-    <link rel="stylesheet" href="resources/css/main.css" />
-  </head>
-  <body>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--CSS -->
+    <link rel="stylesheet" href="resources/css/viz2.css">
+
+</head>
+<body>
     <div class="content">
-      <!-- Title of Vizualiation 2-->
-      <h2 id="viz-title">
-        Proportion of Avoidable vs Unavoidable Deaths in Australia (2000 - 2023)
-      </h2>
+        <!-- Title of Vizualiation 2 -->
+        <h2 id="viz-title" class="transition">Proportion of Avoidable vs Unavoidable Deaths in Australia (1997 - 2021)</h2>
 
-      <div class="flex-container">
-        <!-- Description of Visualization-->
-        <div class="description">
-          <p>
-            This visualization provides a clear and comprehensive overview of
-            the proportion of deaths that are classified as avoidable versus
-            unavoidable. By examining data over several years, this chart
-            illustrates trends and insights into how different factors impact
-            mortality rates. The data is sourced from reputable health databases
-            and is intended to foster better understanding and awareness among
-            policymakers and the public about potential areas for intervention
-            and improvement in healthcare services.
-          </p>
+        <div class="flex-container">
+            <!-- Description of Visualization -->
+            <div class="description">
+                <p class="transition-desc" id="viz-description">This visualization provides a clear and comprehensive overview of 
+                    the proportion of deaths that are classified as avoidable versus unavoidable. 
+                    By examining data over several years, this chart illustrates trends and insights 
+                    into how different factors impact mortality rates. The data is sourced from 
+                    reputable health databases and is intended to foster better understanding and 
+                    awareness among policymakers and the public about potential areas for intervention 
+                    and improvement in healthcare services.
+                </p>
 
-          <div class="legend">
-            <div class="legend-item">
-              <span class="color-box" style="background-color: #ff6347"></span>
-              Avoidable deaths
+                <!-- Hue Legends -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="color-box" style="background-color: #FF6347;"></span> Avoidable Deaths
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box" style="background-color: #4682B4;"></span> Unavoidable Deaths
+                    </div>
+                </div>
+                
             </div>
-            <div class="legend-item">
-              <span class="color-box" style="background-color: #4682b4"></span>
-              Unavoidable deaths
+
+            <!-- Visualization -->
+            <div class="chart-and-source-container">
+                <div class="chart-container">
+                    <p class="click-instruction">Click me!</p>
+                    <p id="pie-chart"></p>
+                </div>
             </div>
-          </div>
+
+            <!-- Tooltip -->
+            <div id="tooltip"></div>
+
+            <!-- Buttons -->
+            <div class="row my-5">
+                <form action="viz1.html">
+                    <div class="col-4">
+                        <button class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold">Previous</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- Visualization-->
-        <div class="chart-container">
-          <p id="pie-chart"></p>
+        <!-- Source Citation -->
+        <div class="chart-and-source-container">
+            <div class="source">
+                <p>Source: Deaths by broad cause of death, number and rates (deaths per 100,000 population),<br> 1907–2021, Australia Institution of Health and Welfare 2022.</p>
+            </div>
         </div>
-      </div>
+
+        
+
+        
+
     </div>
-  </body>
+        
+
+</body>
 </html>

@@ -1,0 +1,176 @@
+/*Import font*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* General Body Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 40px; /* sets margin on all sides */
+}
+
+/* Typography */
+h1 {
+    font-size: 64px;
+    font-weight: bold;
+}
+
+h2#viz-title {
+    text-align: center; /* Centers the title text */
+}
+
+h2 {
+    font-size: 50px;
+    font-weight: bold;
+}
+h3 {
+    font-size: 36px;
+}
+p {
+    font-size: 22px;
+}
+/*Click Me Instruction*/
+.click-instruction {
+    text-align: center;
+    color: #007BFF; 
+    font-weight: bold;
+    margin-bottom: 10px; 
+    cursor: pointer; 
+    animation: pulse 1.5s infinite; 
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Source Citation */
+.source p {
+    text-align: center; /* Centers text */
+    font-size: 12px; /* Smaller font size */
+    color: #666; /* Lighter color */
+}
+
+/* Flex Container Setup */
+.content {
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+    align-items: center; /* Center content */
+    width: 100%;
+}
+
+.button{
+    align-items: left;
+    align-self: flex-start;
+}
+
+.flex-container {
+    display: flex;
+    width: 100%; 
+    justify-content: space-around;
+    align-items: flex-start; /* Align items to the top */
+}
+
+.description {
+    flex: 2;
+    text-align: left; /* Left align text */
+    padding-right: 20px;
+    padding-top: 40px;
+}
+
+.chart-container {
+    flex: 1; 
+    position: relative; 
+    padding-bottom: 20px; 
+}
+
+/* Hue Legend */
+.legend {
+    margin-top: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 10px; 
+}
+
+.color-box {
+    width: 20px; 
+    height: 20px;
+    border: 2px solid black; 
+    margin-right: 10px; 
+}
+
+/*Tool tip*/
+#tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    font: 12px sans-serif;
+    background: whitesmoke;
+    color: black;
+    border-radius: 10px;
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+/*Animation*/
+.transition, .transition-desc, .chart-container, .legend-item, .source {
+    opacity: 0;
+    transform: scale(0.95); /* Start slightly scaled down */
+    transition: opacity 1s ease-in, transform 1s ease-in; 
+  }
+  
+  .transition {
+    animation: fadeInScale 1s ease-in 0.5s forwards; 
+  }
+  
+  .transition-desc {
+    animation: fadeInScale 2s ease-in 0.5s forwards; 
+  }
+
+  .chart-container{
+    animation: fadeInScale 2s ease-in 1s forwards; 
+  }
+
+  .legend-item{
+    animation: fadeInScale 2s ease-in 1s forwards;
+  }
+
+  .source{
+    animation: fadeInScale 2s ease-in 1s forwards;
+  }
+  
+  @keyframes fadeInScale {
+    to {
+      opacity: 1;
+      transform: scale(1); /* Scale to normal size */
+    }
+  }
+  
+/* Chart and Source */
+  .chart-and-source-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    width: fit-content; 
+    margin-left: auto; 
+    margin-right: 20px; 
+}
+
+/* Chart */
+.chart-container {
+    width: auto;
+    height: auto;
+    position: relative; /* If needed for positioning internals like tooltips */
+}
+
+/* Source */
+.source {
+    text-align: right; 
+    width: 100%; 
+}
+
+
