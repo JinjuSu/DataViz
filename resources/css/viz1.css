@@ -80,7 +80,21 @@ p {
 /* Line Chart Style */
 .line {
   fill: none;
-  stroke: red;
+  stroke: green;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+.line2 {
+  fill: none;
+  stroke: blue;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+.line3 {
+  fill: none;
+  stroke: teal;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
