@@ -13,7 +13,8 @@
     <!-- Function for radial charts -->
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
 
-    <script src="resources/js/viz4.js" defer></script>
+    <script src="resources/js/viz4-circular-bar-plot.js"></script>
+    <!-- <script src="resources/js/viz4-bubble-plot.js"></script> -->
 
     <!-- main.css -->
     <link rel="stylesheet" href="resources/css/main.css" />
@@ -31,7 +32,85 @@
   <body>
     <div class="container my-5">
       <h1>This is page 5: Visualization 4</h1>
-      <div id="my_dataviz"></div>
+      <div class="row my-5">
+        <div class="col-auto">
+          <div class="card">
+            <div class="card-body rounded-3">
+              <p class="card-title fs-6">Total population</p>
+              <h1 class="card-text">14,708</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card">
+            <div class="card-body body rounded-3">
+              <p class="card-title fs-6">Alcohol</p>
+              <h1 class="card-text">7,899</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card">
+            <div class="card-body body rounded-3">
+              <p class="card-title fs-6">Tobacco</p>
+              <h1 class="card-text">3,678</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card">
+            <div class="card-body body rounded-3">
+              <p class="card-title fs-6">High Calories</p>
+              <h1 class="card-text">4,500</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card">
+            <div class="card-body body rounded-3">
+              <p class="card-title fs-6">Low Fruit and Veg</p>
+              <h1 class="card-text">13,500</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row my-5">
+        <div class="col-sm-8 col-md-6">
+          <!-- <div id="circularBarPlot"></div> -->
+          <img
+            src="resources/images/prototype-circular-bar.png"
+            alt="prototype"
+          />
+        </div>
+        <div class="col-sm-6 col-4">
+          <!-- <div id="bubblePlot"></div> -->
+          <img src="resources/images/prototype-bubble.png" alt="prototype" />
+        </div>
+        <div class="row">
+          <img src="resources/images/prototype-progress.png" alt="prototype" />
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div class="row my-5">
+        <!-- Previous button -->
+        <div class="col-4">
+          <a href="index.html">
+            <button
+              class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold"
+            >
+              Previous
+            </button>
+          </a>
+        </div>
+        <!-- Next Button -->
+        <div class="col-4 ms-auto right-align">
+          <a href="viz2.html">
+            <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold">
+              Next
+            </button>
+          </a>
+        </div>
+      </div>
     </div>
   </body>
 </html>
