@@ -1,4 +1,4 @@
-/*Import font*/
+/* Import font */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
 /* General Body Styles */
@@ -13,7 +13,7 @@ h1 {
   font-weight: bold;
 }
 
-h2 #viz-title {
+h2#viz-title {
   text-align: center; /* Centers the title text */
 }
 
@@ -40,68 +40,37 @@ p {
 
 .flex-container {
   display: flex;
-  width: 100%; /* Full width to contain both description and chart */
+  width: 100%; /* Full width to contain both charts */
   justify-content: space-around; /* Space around items */
   align-items: flex-start; /* Align items to the top */
 }
 
-.description {
-  flex: 2; /* Gives the description more space */
-  text-align: left; /* Left aligns the text */
-  padding-right: 20px; /* Spacing between description and SVG */
-}
-
 .chart-container {
-  flex: 1; /* SVG takes less space than description */
-}
-
-/* Hue Legend */
-.legend {
-  margin-top: 20px; /* Adds space between description and legend */
-}
-
-.legend-item {
-  display: flex;
-  align-items: center; /* Aligns the color box and text vertically */
-  margin-bottom: 10px; /* Space between legend items */
-}
-
-.color-box {
-  width: 20px; /* Size of the color box */
-  height: 20px;
-  border: 2px solid black; /* Black outline around the color box */
-  margin-right: 10px; /* Space between the color box and the text */
-}
-
-.right-align {
-  text-align: right; /* Aligns content to the right */
+  flex: 1; /* Equal space for both charts */
 }
 
 /* Line Chart Style */
 .line {
   fill: none;
-  stroke: green;
+  stroke: #42f575;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
 
 .line2 {
   fill: none;
-  stroke: blue;
+  stroke: #FF6347;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
 
 .line3 {
   fill: none;
-  stroke: teal;
+  stroke: #4682B4;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
 
-.line:hover {
-  stroke: blue;
-}
 
 rect {
   pointer-events: all;
@@ -119,4 +88,19 @@ body .tooltip {
   border-radius: 10px;
   display: none;
   opacity: 0.75;
+}
+
+/* Source Citation */
+.source p {
+  text-align: center; /* Centers text */
+  font-size: 12px; /* Smaller font size */
+  color: #666; /* Lighter color */
+}
+
+.center-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
 }
