@@ -4,7 +4,7 @@ function init() {
   var h = 600 - margin.top - margin.bottom;
   var padding = 50;
 
-  var dataset, xScale, yScale, xAxis, yAxis, area, svg, pieSvg;
+  var dataset, xScale, yScale, xAxis, yAxis, svg, pieSvg;
 
   var formatTime = d3.timeFormat("%Y");
 
@@ -43,6 +43,12 @@ function init() {
           .y0(yScale(0))
           .y1(d => yScale(d[dataField]));
 
+      //Define line generators
+      var lineGenerator = (dataField) => d3.line()
+          .defined(d => d[dataField] >= 0)
+          .x(d => xScale(d.year))
+          .y(d => yScale(d[dataField]));
+
       //Create SVG element for area chart
       svg = d3.select("#line-chart").append("svg")
           .attr("width", w + margin.left + margin.right)
@@ -56,6 +62,7 @@ function init() {
               .datum(dataset)
               .attr("class", className)
               .attr("fill", color)
+              .attr("opacity", 0.3)
               .attr("d", areaGenerator(data));
 
           const totalLength = path.node().getTotalLength();
@@ -70,9 +77,34 @@ function init() {
           return path;
       };
 
+      // Create the lines with animation
+      const createLineWithAnimation = (data, className, color) => {
+          const path = svg.append("path")
+              .datum(dataset)
+              .attr("class", className)
+              .attr("fill", "none")
+              .attr("stroke", color)
+              .attr("stroke-width", 5)
+              .attr("d", lineGenerator(data));
+
+          const totalLength = path.node().getTotalLength();
+
+          path.attr("stroke-dasharray", totalLength + " " + totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+              .duration(3000)
+              .ease(d3.easeLinear)
+              .attr("stroke-dashoffset", 0);
+
+          return path;
+      };
+
       createAreaWithAnimation('deaths', 'area', 'lightgreen');
-      createAreaWithAnimation('avoidableDeaths', 'area2', '#FFA07A');
+      createLineWithAnimation('deaths', 'line', 'green');
+      createAreaWithAnimation('avoidableDeaths', 'area2', 'lightcoral');
+      createLineWithAnimation('avoidableDeaths', 'line2', '#FF6347');
       createAreaWithAnimation('unavoidableDeaths', 'area3', 'lightblue');
+      createLineWithAnimation('unavoidableDeaths', 'line3', '#4682B4');
 
       //Create axes
       svg.append("g")
@@ -254,7 +286,7 @@ function init() {
               return t => arc(i(t));
           })
           .on("end", function (d) {
-              d3.select(this).on("click", function () {
+              d3.select(this).on("click", function (event) {
                   const isSelected = d3.select(this).classed("exploded");
                   const [x, y] = arc.centroid(d);
                   if (!isSelected) {
