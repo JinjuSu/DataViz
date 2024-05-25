@@ -145,3 +145,8 @@ body .tooltip {
 
   color: #ff4949;
 }
+
+.page-title {
+  font-size: 64px;
+  font-weight: semi-bold;
+}
