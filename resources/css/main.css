@@ -117,18 +117,22 @@ body .tooltip {
   stroke: black;
 }
 
-.bubble-card-body {
+.bubble-card {
   color: #ffffff;
   background-color: #211c33;
   height: 150px;
+  padding: 16px;
+  position: relative;
+}
+
+.bubble-card-body {
+  font-size: 40px;
+  position: absolute;
+  bottom: 0;
 }
 
 .bubble-card-box {
   text-align: bottom;
-}
-
-.bubble-card-text {
-  font-size: 36px;
 }
 
 .correlation-scale {
@@ -136,7 +140,8 @@ body .tooltip {
   min-height: 200px;
 }
 
-.correlation-text h1 {
+.correlation-body {
   font-size: 81px;
+
   color: #ff4949;
 }
