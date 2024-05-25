@@ -1,8 +1,10 @@
 /*Import font*/
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
-/* General Body Styles */
-body {
+/* Body style */
+.body {
+  color: #ffffff;
+  background-color: #140f24;
   font-family: "Poppins", sans-serif;
   margin: 40px; /* sets margin on all sides */
 }
@@ -113,4 +115,28 @@ body .tooltip {
 }
 .bubbles:hover {
   stroke: black;
+}
+
+.bubble-card-body {
+  color: #ffffff;
+  background-color: #211c33;
+  height: 150px;
+}
+
+.bubble-card-box {
+  text-align: bottom;
+}
+
+.bubble-card-text {
+  font-size: 36px;
+}
+
+.correlation-scale {
+  min-width: 250px;
+  min-height: 200px;
+}
+
+.correlation-text h1 {
+  font-size: 81px;
+  color: #ff4949;
 }
