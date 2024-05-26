@@ -1,11 +1,7 @@
-/*Import font*/
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
-
-/* Body style */
 .body {
   color: #ffffff;
   background-color: #140f24;
-  font-family: "Poppins", sans-serif;
+  font-family: "inter", sans-serif;
   margin: 40px; /* sets margin on all sides */
 }
 
@@ -29,7 +25,7 @@ h3 {
 }
 
 p {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 /* Flex Container Setup */
@@ -137,7 +133,7 @@ body .tooltip {
 
 .correlation-scale {
   min-width: 250px;
-  min-height: 200px;
+  min-height: 180px;
 }
 
 .correlation-body {
@@ -149,4 +145,37 @@ body .tooltip {
 .page-title {
   font-size: 64px;
   font-weight: semi-bold;
+}
+
+.radio-tick {
+  width: 100%;
+  height: 10px;
+}
+
+.radio-tick input {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #5721f0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.radio-tick input:checked {
+  background-color: #d32a90;
+}
+
+.radio-tick p {
+  font-size: 16px; /* Default font size */
+}
+
+.radio-tick.checked p {
+  font-size: 20px; /* Larger font size for selected */
+  font-weight: bold; /* Bold font weight for selected */
+}
+
+.sub-header {
+  font-size: 24px;
+  font-weight: bold;
 }

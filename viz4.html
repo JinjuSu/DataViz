@@ -27,16 +27,27 @@
       crossorigin="anonymous"
     />
 
+    <!-- Import Font-awesome -->
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+      integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+      crossorigin="anonymous"
+    ></script>
+
     <title>Page 5: Body weight: Health Rish Factors</title>
   </head>
   <body class="body">
     <div class="container-fluid my-5">
+      <!-- Title -->
       <p class="page-title">So what causes obesity?</p>
-      <div class="row my-1 g-4">
+      <!-- 1st container row -->
+      <!-- Dashboard cards -->
+      <div class="row g-4">
         <!-- Scale -->
         <div class="col-sm-8 col-md-8 col-lg-4">
           <div class="correlation-scale">
-            <p>This is the scale</p>
+            <p><em> This is the scale (remove this text) </em></p>
           </div>
         </div>
         <!-- Correlation Coefficient % -->
@@ -69,7 +80,8 @@
         </div>
       </div>
 
-      <div class="row g-2 my-5">
+      <!-- 2nd container row -->
+      <div class="row g-4">
         <!-- Bubble Plot & Year Picker -->
         <div class="col-sm-8 col-md-6">
           <!-- <div id="bubblePlot"></div> -->
@@ -77,60 +89,110 @@
             <img src="resources/images/prototype-bubble.png" alt="prototype" />
           </div>
 
-          <div class="row">
+          <!-- Year Picket -->
+
+          <div class="row my-4 gx-2">
             <div>
-              <div></div>
-              <p>2001</p>
+              <p class="sub-header">
+                Pick a year or play the time line
+                <i class="fa-solid fa-circle-play"></i>
+              </p>
             </div>
-            <div>
-              <div></div>
-              <p>2004-2005</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2001" name="yearSelection" />
+                <label for="year2011-2012">
+                  <p>2001</p>
+                </label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2004-2005</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2004-2005" name="yearSelection" />
+                <label for="year2011-2012"><p>2004 - 2005</p></label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2007-2008</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2007-2008" name="yearSelection" />
+                <label for="year2011-2012"><p>2007 - 2008</p></label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2011-2012</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2011-2012" name="yearSelection" />
+                <label for="year2011-2012"><p>2011 - 2012</p></label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2014-2015</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2014-2015" name="yearSelection" />
+                <label for="year2014-2015">
+                  <p>2014 - 2015</p>
+                </label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2017-2018</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input type="radio" id="year2017-2018" name="yearSelection" />
+                <label for="year2017-2018">
+                  <p>2017 - 2018</p>
+                </label>
+              </div>
             </div>
-            <div>
-              <div></div>
-              <p>2022</p>
+            <div class="col">
+              <div class="radio-tick">
+                <input
+                  type="radio"
+                  id="year2022"
+                  name="yearSelection"
+                  checked
+                />
+                <label for="year2022"><p>2022</p></label>
+              </div>
             </div>
           </div>
+          <!-- column end tag -->
         </div>
 
         <!-- Circular Bar Pot & Desciprtion -->
         <div class="col-sm-8 col-md-6">
-          <!-- Circular Bar Plot -->
           <div class="row">
-            <!-- <div id="circularBarPlot"></div> -->
-            <img
-              src="resources/images/prototype-circular-bar.png"
-              alt="prototype"
-            />
+            <!-- Circular Bar Plot -->
+            <div class="col">
+              <!-- <div id="circularBarPlot"></div> -->
+              <img
+                class=""
+                src="resources/images/prototype-circular-bar.png"
+                alt="prototype"
+              />
+            </div>
+            <div class="col">
+              <!-- Legends -->
+              <p>Category 1</p>
+              <p>Category 2</p>
+              <p>Category 3</p>
+              <p>Category 4</p>
+              <p>Category 5</p>
+            </div>
           </div>
           <!-- Descriptions -->
           <div class="row">
-            <h1>Description</h1>
+            <p class="sub-header">Description</p>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus,
-              expedita provident? Fugit nisi voluptatibus quasi est obcaecati!
-              Aliquam dignissimos ipsum minus id excepturi magni quo vero
-              explicabo eveniet, inventore earum.
+              In 2004 - 2005, 19,806 people were measured in the survey. They
+              survey found that 12,963 of them drink excessive amount of alcohol
+              due to the xxx guideline and 2,591 of the people were found to be
+              overweight or obese.
+            </p>
+            <p>
+              This data shows that, in 2004 - 2005, excessive amount of alcohol
+              had a correlation coefficient value at 0.8 which is considered a
+              high positive correlation.
+            </p>
+            <p>
+              It can be interpreted that this factor had a high tendency to lead
+              to the condition of overweight or obese.
             </p>
           </div>
         </div>
@@ -158,5 +220,23 @@
         </div>
       </div>
     </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const radios = document.querySelectorAll(
+          '.radio-tick input[type="radio"]'
+        );
+
+        radios.forEach((radio) => {
+          radio.addEventListener("change", () => {
+            // Remove checked class from all
+            radios.forEach((r) => r.parentNode.classList.remove("checked"));
+            // Add checked class to the checked radio
+            if (radio.checked) {
+              radio.parentNode.classList.add("checked");
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
