@@ -1,11 +1,11 @@
 function init() {
-  const circularBarCSV1 = "resources/dataset/viz4/AIHW/percent/2001.csv";
-  const circularBarCSV2 = "resources/dataset/viz4/AIHW/percent/2004-2005.csv";
-  const circularBarCSV3 = "resources/dataset/viz4/AIHW/percent/2007-2008.csv";
-  const circularBarCSV4 = "resources/dataset/viz4/AIHW/percent/2011-2012.csv";
-  const circularBarCSV5 = "resources/dataset/viz4/AIHW/percent/2014–2015.csv";
-  const circularBarCSV6 = "resources/dataset/viz4/AIHW/percent/2017–2018.csv";
-  const circularBarCSV7 = "resources/dataset/viz4/AIHW/percent/2022.csv";
+  const dataset1 = "resources/dataset/viz4/AIHW/percent/2001.csv";
+  const dataset2 = "resources/dataset/viz4/AIHW/percent/2004-2005.csv";
+  const dataset3 = "resources/dataset/viz4/AIHW/percent/2007-2008.csv";
+  const dataset4 = "resources/dataset/viz4/AIHW/percent/2011-2012.csv";
+  const dataset5 = "resources/dataset/viz4/AIHW/percent/2014–2015.csv";
+  const dataset6 = "resources/dataset/viz4/AIHW/percent/2017–2018.csv";
+  const dataset7 = "resources/dataset/viz4/AIHW/processed/2022.csv";
 
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
@@ -43,40 +43,45 @@ function init() {
       var myColor = d3
         .scaleOrdinal()
         .domain(["Asia", "Europe", "Americas", "Africa", "Oceania"])
-        .range(d3.schemeSet2);
+        .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
       // -1- Create a tooltip div that is hidden by default:
       var tooltip = d3
-        .select("#my_dataviz")
+        .select("body")
         .append("div")
-        .style("opacity", 0)
         .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("opacity", 0)
         .style("background-color", "black")
         .style("border-radius", "5px")
         .style("padding", "10px")
         .style("color", "white");
 
       // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
-      var showTooltip = function (d) {
-        tooltip.transition().duration(200);
+      var showTooltip = function (event, d) {
+        console.log("showTooltip triggered");
+
         tooltip
           .style("opacity", 1)
           .html("Country: " + d.country)
-          .style("left", d3.mouse(this)[0] + 30 + "px")
-          .style("top", d3.mouse(this)[1] + 30 + "px");
+          .style("left", event.pageX + 10 + "px") // Adjust the position here
+          .style("top", event.pageY - 28 + "px");
       };
-      var moveTooltip = function (d) {
+
+      var moveTooltip = function (event, d) {
+        console.log("moveTooltip triggered");
         tooltip
-          .style("left", d3.mouse(this)[0] + 30 + "px")
-          .style("top", d3.mouse(this)[1] + 30 + "px");
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
       };
-      var hideTooltip = function (d) {
-        tooltip.transition().duration(200).style("opacity", 0);
+
+      var hideTooltip = function () {
+        console.log("hideTooltip triggered");
+        tooltip.style("opacity", 0);
       };
 
       // Add dots
       svg
-        .append("g")
         .selectAll("dot")
         .data(data)
         .enter()
@@ -94,7 +99,6 @@ function init() {
         .style("fill", function (d) {
           return myColor(d.continent);
         })
-        // -3- Trigger the functions
         .on("mouseover", showTooltip)
         .on("mousemove", moveTooltip)
         .on("mouseleave", hideTooltip);

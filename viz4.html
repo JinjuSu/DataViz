@@ -7,14 +7,15 @@
     <meta name="name" content="Darrell Devlin" />
     <meta name="Author" content="Jinjuta Suksuwan Thursday 9:30 - 10:30AM" />
 
-    <!-- Import the custom visualization -->
+    <!-- Import customer charts -->
+    <!-- <script src="resources/js/viz4-circular-bar-plot.js"></script> -->
+    <script src="resources/js/viz4-bubble-plot.js"></script>
+
+    <!-- Import D3.js version 4 -->
     <script src="https://d3js.org/d3.v4.js"></script>
 
     <!-- Import D3.js Function for radial charts -->
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
-
-    <!-- <script src="resources/js/viz4-circular-bar-plot.js"></script> -->
-    <!-- <script src="resources/js/viz4-bubble-plot.js"></script> -->
 
     <!-- Import CSS -->
     <link rel="stylesheet" href="./resources/css/main.css" />
@@ -28,17 +29,21 @@
     />
 
     <!-- Import Font-awesome -->
-    <script
-      defer
-      src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
-      integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
       crossorigin="anonymous"
-    ></script>
+      referrerpolicy="no-referrer"
+    />
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
 
-    <title>Page 5: Body weight: Health Rish Factors</title>
+    <!-- Tab title -->
+    <title>Page 5: Obesity & Health Rish Factors</title>
   </head>
   <body class="body">
-    <div class="container-fluid my-5">
+    <div class="container-fluid">
       <!-- Title -->
       <p class="page-title">So what causes obesity?</p>
       <!-- 1st container row -->
@@ -84,18 +89,17 @@
       <div class="row g-4">
         <!-- Bubble Plot & Year Picker -->
         <div class="col-sm-8 col-md-6">
-          <!-- <div id="bubblePlot"></div> -->
           <div class="row">
-            <img src="resources/images/prototype-bubble.png" alt="prototype" />
+            <div id="bubblePlot"></div>
           </div>
 
-          <!-- Year Picket -->
-
+          <!-- Year Picker -->
           <div class="row my-4 gx-2">
             <div>
               <p class="sub-header">
                 Pick a year or play the time line
                 <i class="fa-solid fa-circle-play"></i>
+                <i class="fa-solid fa-stop"></i>
               </p>
             </div>
             <div class="col">
@@ -169,11 +173,11 @@
             </div>
             <div class="col">
               <!-- Legends -->
-              <p>Category 1</p>
-              <p>Category 2</p>
-              <p>Category 3</p>
-              <p>Category 4</p>
-              <p>Category 5</p>
+              <p>1 Excessive Acohol consuption</p>
+              <p>2 Daily Tobacco</p>
+              <p>3 Daily Fruit</p>
+              <p>4 Daily Vegetable</p>
+              <p>5 Low Physcial Activity</p>
             </div>
           </div>
           <!-- Descriptions -->
