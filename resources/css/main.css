@@ -1,9 +1,7 @@
-/*Import font*/
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
-
-/* General Body Styles */
-body {
-  font-family: "Poppins", sans-serif;
+.body {
+  color: #ffffff;
+  background-color: #140f24;
+  font-family: "inter", sans-serif;
   margin: 40px; /* sets margin on all sides */
 }
 
@@ -27,7 +25,7 @@ h3 {
 }
 
 p {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 /* Flex Container Setup */
@@ -113,4 +111,71 @@ body .tooltip {
 }
 .bubbles:hover {
   stroke: black;
+}
+
+.bubble-card {
+  color: #ffffff;
+  background-color: #211c33;
+  height: 150px;
+  padding: 16px;
+  position: relative;
+}
+
+.bubble-card-body {
+  font-size: 40px;
+  position: absolute;
+  bottom: 0;
+}
+
+.bubble-card-box {
+  text-align: bottom;
+}
+
+.correlation-scale {
+  min-width: 250px;
+  min-height: 180px;
+}
+
+.correlation-body {
+  font-size: 81px;
+
+  color: #ff4949;
+}
+
+.page-title {
+  font-size: 64px;
+  font-weight: semi-bold;
+}
+
+.radio-tick {
+  width: 100%;
+  height: 10px;
+}
+
+.radio-tick input {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #5721f0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.radio-tick input:checked {
+  background-color: #d32a90;
+}
+
+.radio-tick p {
+  font-size: 16px; /* Default font size */
+}
+
+.radio-tick.checked p {
+  font-size: 20px; /* Larger font size for selected */
+  font-weight: bold; /* Bold font weight for selected */
+}
+
+.sub-header {
+  font-size: 24px;
+  font-weight: bold;
 }
