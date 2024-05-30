@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Data Visualization" />
-    <meta name="keywords" content="HTML, CSS, D3, Javascript" />
-    <meta name="name" content="Darrell Devlin" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Data Visualization">
+    <meta name="keywords" content="HTML, CSS, D3, Javascript">
+    <meta name="name" content="Darrell Devlin">
 
     <title>Australia's Death Proportions</title>
 
@@ -18,49 +18,84 @@
     <!--CSS -->
     <link rel="stylesheet" href="resources/css/viz1.css">
 
-  </head>
-  <body>
+</head>
+<body>
     <div class="content">
-      <div class="center-title">
-        <h1 id="viz-title" class="transition">What are the number and proportion of deaths in Australia?</h1>
-      </div>
-
-      <div class="flex-container">
-        <div class="chart-container">
-          <p id="line-chart"></p>
+        <div class="center-title">
+            <h1 id="viz-title" class="transition">What are the number and proportion of deaths in Australia?</h1>
         </div>
-        <div class="chart-container">
-          <p id="pie-chart"></p>
+
+        <div class="flex-container">
+            <div class="chart-container">
+                <div>
+                    <p id="line-chart"></p>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #648FFF;"></span> Total Deaths
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #785EF0;"></span> Avoidable Deaths
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #DC267F;"></span> Unavoidable Deaths
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div>
+                    <p id="pie-chart"></p>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #648FFF;"></span> Cardiovascular
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #785EF0;"></span> Cancer
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #DC267F;"></span> Respiratory
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #FE6100;"></span> Infectious
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #FFB000;"></span> Injury
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box" style="background-color: #00D200;"></span> Other
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- Source Citation -->
-      <div class="chart-and-source-container">
-        <div class="source">
-          <p>Source: Deaths by broad cause of death, number and rates (deaths per 100,000 population),<br> 1907–2021, Australia Institution of Health and Welfare 2022.</p>
+        <!-- Source Citation -->
+        <div class="chart-and-source-container">
+            <div class="source">
+                <p>Source: Deaths by broad cause of death, number and rates (deaths per 100,000 population),<br> 1907–2021, Australia Institution of Health and Welfare 2022.</p>
+            </div>
         </div>
-      </div>
 
-      <p>
-        The visualizations present a comprehensive analysis of the number and proportion of avoidable and unavoidable deaths in Australia from 1997 to 2021. The line chart on the left illustrates the trends in total deaths, avoidable deaths, and unavoidable deaths over the specified period. Each line is distinctly colored for clarity: green for total deaths, orange for avoidable deaths, and blue for unavoidable deaths. The years on the line chart can be clicked to reveal the exact data points for that year, enhancing data inspection with a corresponding vertical line for better visual guidance.
-        <br><br>
+        <p>
+            The visualizations present a comprehensive analysis of the number and proportion of avoidable and unavoidable deaths in Australia from 1997 to 2021. The line chart on the left illustrates the trends in total deaths, avoidable deaths, and unavoidable deaths over the specified period. Each line is distinctly colored for clarity: green for total deaths, orange for avoidable deaths, and blue for unavoidable deaths. The years on the line chart can be clicked to reveal the exact data points for that year, enhancing data inspection with a corresponding vertical line for better visual guidance.
+            <br><br>
 
-        On the right, the pie chart provides a snapshot of the relative proportions of avoidable and unavoidable deaths for the selected year. The colors match the lines in the left chart for consistency: orange for avoidable deaths and blue for unavoidable deaths. Additionally, the segments of the pie chart can be clicked on to gain more detailed information about each type of death. This combination of visualizations effectively highlights both the trends over time and the proportional breakdown for any given year, providing a clear and interactive way to understand changes and distributions in mortality causes in Australia.
-      </p>
+            On the right, the pie chart provides a snapshot of the relative proportions of avoidable and unavoidable deaths for the selected year. The colors match the lines in the left chart for consistency: orange for avoidable deaths and blue for unavoidable deaths. Additionally, the segments of the pie chart can be clicked on to gain more detailed information about each type of death. This combination of visualizations effectively highlights both the trends over time and the proportional breakdown for any given year, providing a clear and interactive way to understand changes and distributions in mortality causes in Australia.
+        </p>
     </div>
 
     <!-- Buttons -->
     <div class="row my-5">
-      <div class="col-4">
-        <form action="index.html">
-          <button class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold">Previous</button>
-        </form>
-      </div>
-      <div class="col-4 ms-auto text-end">
-        <form action="viz2.html">
-          <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold">Next</button>
-        </form>
-      </div>
+        <div class="col-4">
+            <form action="index.html">
+                <button class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold">Previous</button>
+            </form>
+        </div>
+        <div class="col-4 ms-auto text-end">
+            <form action="viz2.html">
+                <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold">Next</button>
+            </form>
+        </div>
     </div>
-  </body>
+</body>
 </html>

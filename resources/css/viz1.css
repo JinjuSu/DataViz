@@ -58,24 +58,46 @@ p.sub-header {
   align-items: center; /* Center the content inside */
 }
 
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  font-size: 14px;
+}
+
+.color-box {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
 /* Line Chart Style */
 .line {
   fill: none;
-  stroke: #42f575;
+  stroke: #648FFF;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
 
 .line2 {
   fill: none;
-  stroke: #FF6347;
+  stroke: #DC267F;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }
 
 .line3 {
   fill: none;
-  stroke: #4682B4;
+  stroke: #785EF0;
   stroke-width: 5;
   transition: stroke 0.2s ease;
 }

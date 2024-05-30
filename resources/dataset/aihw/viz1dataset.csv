@@ -1,4 +1,4 @@
-year,Total deaths,avoidableDeaths,unavoidableDeaths,avoidablePercentage,unavoidablePercentage,Cardiovascular diseases,Cancers,Respiratorydiseases,Infectiousdiseases,Injury_poisoning,Other,cardiovascularPercentage,cancerPercentage,respiratoryPercentage,infectiousPercentage,injuryPercentage,otherPercentage
+year,totalDeaths,avoidableDeaths,unavoidableDeaths,avoidablePercentage,unavoidablePercentage,Cardiovascular diseases,Cancers,Respiratorydiseases,Infectiousdiseases,Injury_poisoning,Other,cardiovascularPercentage,cancerPercentage,respiratoryPercentage,infectiousPercentage,injuryPercentage,otherPercentage
 1997,129350,33212,96138,25.7,74.3,53636,35363,10349,1522,7864,20616,41.5,27.3,8.0,1.2,6.1,15.9
 1998,127202,31854,95348,25.0,75.0,51787,35609,9614,1454,8215,20523,40.7,28.0,7.6,1.1,6.5,16.1
 1999,128102,31088,97014,24.3,75.7,51303,35856,9613,1603,8361,21366,40.0,28.0,7.5,1.3,6.5,16.7
