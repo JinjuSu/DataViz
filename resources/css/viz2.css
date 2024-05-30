@@ -1,9 +1,7 @@
-/*Import font*/
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
-
-/* General Body Styles */
-body {
-  font-family: "Poppins", sans-serif;
+.body {
+  color: #ffffff;
+  background-color: #140f24;
+  font-family: "inter", sans-serif;
   margin: 40px; /* sets margin on all sides */
 }
 
@@ -13,7 +11,7 @@ h1 {
   font-weight: bold;
 }
 
-h2#viz-title {
+h2 #viz-title {
   text-align: center; /* Centers the title text */
 }
 
@@ -21,164 +19,163 @@ h2 {
   font-size: 50px;
   font-weight: bold;
 }
+
 h3 {
   font-size: 36px;
 }
+
 p {
-  font-size: 22px;
-}
-/*Click Me Instruction*/
-.click-instruction {
-  text-align: center;
-  color: #007bff;
-  font-weight: bold;
-  margin-bottom: 10px;
-  cursor: pointer;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Source Citation */
-.source p {
-  text-align: center; /* Centers text */
-  font-size: 12px; /* Smaller font size */
-  color: #666; /* Lighter color */
+  font-size: 18px;
 }
 
 /* Flex Container Setup */
 .content {
   display: flex;
   flex-direction: column; /* Stacks children vertically */
-  align-items: center; /* Center content */
-  width: 100%;
-}
-
-.button {
-  align-items: left;
-  align-self: flex-start;
+  align-items: center; /* Center content horizontally */
+  width: 100%; /* Ensures the container takes full width */
 }
 
 .flex-container {
   display: flex;
-  width: 100%;
-  justify-content: space-around;
+  width: 100%; /* Full width to contain both description and chart */
+  justify-content: space-around; /* Space around items */
   align-items: flex-start; /* Align items to the top */
 }
 
 .description {
-  flex: 2;
-  text-align: left; /* Left align text */
-  padding-right: 20px;
-  padding-top: 40px;
+  flex: 2; /* Gives the description more space */
+  text-align: left; /* Left aligns the text */
+  padding-right: 20px; /* Spacing between description and SVG */
 }
 
 .chart-container {
-  flex: 1;
-  position: relative;
-  padding-bottom: 20px;
+  flex: 1; /* SVG takes less space than description */
 }
 
 /* Hue Legend */
 .legend {
-  margin-top: 10px;
+  margin-top: 20px; /* Adds space between description and legend */
 }
 
 .legend-item {
   display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+  align-items: center; /* Aligns the color box and text vertically */
+  margin-bottom: 10px; /* Space between legend items */
 }
 
 .color-box {
-  width: 20px;
+  width: 20px; /* Size of the color box */
   height: 20px;
-  border: 2px solid black;
-  margin-right: 10px;
+  border: 2px solid black; /* Black outline around the color box */
+  margin-right: 10px; /* Space between the color box and the text */
 }
 
-/*Tool tip*/
-#tooltip {
+.right-align {
+  text-align: right; /* Aligns content to the right */
+}
+
+/* Line Chart Style */
+.line {
+  fill: none;
+  stroke: red;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+.line:hover {
+  stroke: blue;
+}
+
+rect {
+  pointer-events: all;
+  fill-opacity: 0;
+  stroke-opacity: 0;
+  z-index: 1;
+}
+
+body .tooltip {
   position: absolute;
-  text-align: center;
-  width: auto;
-  height: auto;
   padding: 10px;
-  font: 12px sans-serif;
-  background: whitesmoke;
-  color: black;
+  background-color: steelblue;
+  color: white;
+  border: 1px solid white;
   border-radius: 10px;
-  pointer-events: none;
+  display: none;
   opacity: 0.75;
 }
 
-/*Animation*/
-.transition,
-.transition-desc,
-.chart-container,
-.legend-item,
-.source {
-  opacity: 0;
-  transform: scale(0.95); /* Start slightly scaled down */
-  transition: opacity 1s ease-in, transform 1s ease-in;
+.bubbles {
+  stroke-width: 2px;
+  stroke: white;
+}
+.bubbles:hover {
+  stroke: black;
 }
 
-.transition {
-  animation: fadeInScale 1s ease-in 0.5s forwards;
+.bubble-card {
+  color: #ffffff;
+  background-color: #211c33;
+  height: 150px;
+  padding: 16px;
+  position: relative;
 }
 
-.transition-desc {
-  animation: fadeInScale 1s ease-in 0.5s forwards;
+.bubble-card-body {
+  font-size: 40px;
+  position: absolute;
+  bottom: 0;
 }
 
-.chart-container {
-  animation: fadeInScale 1s ease-in 1s forwards;
+.bubble-card-box {
+  text-align: bottom;
 }
 
-.legend-item {
-  animation: fadeInScale 1s ease-in 1s forwards;
+.correlation-scale {
+  min-width: 250px;
+  min-height: 180px;
 }
 
-.source {
-  animation: fadeInScale 2s ease-in 1s forwards;
+.correlation-body {
+  font-size: 81px;
+
+  color: #ff4949;
 }
 
-@keyframes fadeInScale {
-  to {
-    opacity: 1;
-    transform: scale(1); /* Scale to normal size */
-  }
+.page-title {
+  font-size: 64px;
+  font-weight: semi-bold;
 }
 
-/* Chart and Source */
-.chart-and-source-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: 20px;
-}
-
-/* Chart */
-.chart-container {
-  width: auto;
-  height: auto;
-  position: relative; /* If needed for positioning internals like tooltips */
-}
-
-/* Source */
-.source {
-  text-align: right;
+.radio-tick {
   width: 100%;
+  height: 10px;
+}
+
+.radio-tick input {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #5721f0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.radio-tick input:checked {
+  background-color: #d32a90;
+}
+
+.radio-tick p {
+  font-size: 16px; /* Default font size */
+}
+
+.radio-tick.checked p {
+  font-size: 20px; /* Larger font size for selected */
+  font-weight: bold; /* Bold font weight for selected */
+}
+
+.sub-header {
+  font-size: 24px;
+  font-weight: bold;
 }
