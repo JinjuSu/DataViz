@@ -9,6 +9,7 @@ function init() {
     var formatTime = d3.timeFormat("%Y");
 
     const tooltip = d3.select("body").append("div").attr("class", "tooltip");
+    const pieTooltip = d3.select("body").append("div").attr("class", "pie-tooltip");
 
     // Import csv file from the Relative Path
     d3.csv("resources/dataset/aihw/viz1dataset.csv", function (d) {
@@ -38,24 +39,24 @@ function init() {
             .domain([0, d3.max(dataset, d => d.deaths)])
             .range([h - padding, 0]);
 
-        //Define axes
+        // Define axes
         xAxis = d3.axisBottom().scale(xScale).ticks(10).tickFormat(formatTime);
         yAxis = d3.axisLeft().scale(yScale);
 
-        //Define area generators
+        // Define area generators
         var areaGenerator = (dataField) => d3.area()
             .defined(d => d[dataField] >= 0)
             .x(d => xScale(d.year))
             .y0(yScale(0))
             .y1(d => yScale(d[dataField]));
 
-        //Define line generators
+        // Define line generators
         var lineGenerator = (dataField) => d3.line()
             .defined(d => d[dataField] >= 0)
             .x(d => xScale(d.year))
             .y(d => yScale(d[dataField]));
 
-        //Create SVG element for area chart
+        // Create SVG element for area chart
         svg = d3.select("#line-chart").append("svg")
             .attr("width", w + margin.left + margin.right)
             .attr("height", h + margin.top + margin.bottom)
@@ -105,6 +106,7 @@ function init() {
             return path;
         };
 
+        // Animate the area and line together
         createAreaWithAnimation('deaths', 'area', '#648FFF');
         createLineWithAnimation('deaths', 'line', '#648FFF');
         createAreaWithAnimation('avoidableDeaths', 'area2', '#785EF0');
@@ -112,7 +114,7 @@ function init() {
         createAreaWithAnimation('unavoidableDeaths', 'area3', '#DC267F');
         createLineWithAnimation('unavoidableDeaths', 'line3', '#DC267F');
 
-        //Create axes
+        // Create axes
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0," + (h - padding) + ")")
@@ -263,16 +265,22 @@ function init() {
 
         // Initialize pie chart with the latest year's data
         updatePieChart(dataset[dataset.length - 1]);
+
+        // Reset tooltips button functionality
+        d3.select(".reset-tooltips").on("click", function () {
+            tooltip.style("display", "none");
+            pieTooltip.style("display", "none");
+        });
     });
 
     function updatePieChart(data) {
         const pieData = [
-            { label: "Cardiovascular", value: data.cardiovascularPercentage },
-            { label: "Cancer", value: data.cancerPercentage },
-            { label: "Respiratory", value: data.respiratoryPercentage },
-            { label: "Infectious", value: data.infectiousPercentage },
-            { label: "Injury", value: data.injuryPercentage },
-            { label: "Other", value: data.otherPercentage }
+            { label: "Cardiovascular", value: data.cardiovascularPercentage, description: "Cardiovascular diseases include heart diseases and strokes." },
+            { label: "Cancer", value: data.cancerPercentage, description: "Cancer includes all types of cancerous diseases." },
+            { label: "Respiratory", value: data.respiratoryPercentage, description: "Respiratory diseases include asthma, bronchitis, and others." },
+            { label: "Infectious", value: data.infectiousPercentage, description: "Infectious diseases include viral, bacterial, and other infections." },
+            { label: "Injury", value: data.injuryPercentage, description: "Injuries include accidents, self-harm, and other physical injuries." },
+            { label: "Other", value: data.otherPercentage, description: "Other includes all other causes of death not categorized above." }
         ];
 
         const colorScale = d3.scaleOrdinal()
@@ -282,48 +290,75 @@ function init() {
         const pie = d3.pie().value(d => d.value).sort(null);
 
         const arc = d3.arc()
-            .innerRadius(0)
+            .innerRadius(100) // Adjusted inner radius to create a thinner doughnut chart
             .outerRadius(150)
             .padAngle(0.01)
             .cornerRadius(5);
 
+        const expandedArc = d3.arc()
+            .innerRadius(100) // Adjusted inner radius for expanded state
+            .outerRadius(180)
+            .padAngle(0.01)
+            .cornerRadius(5);
+
         const arcs = pieSvg.selectAll(".arc")
-            .data(pie(pieData));
+            .data(pie(pieData), d => d.data.label); // Use label as key for data binding
 
         arcs.enter().append("path")
             .attr("class", "arc")
-            .attr("d", arc)
             .attr("fill", d => colorScale(d.data.label))
-            .style("stroke", "black")
+            .attr("stroke", "black")
             .style("stroke-width", "2px")
+            .each(function(d) { this._current = { startAngle: 0, endAngle: 0 }; }) // Store the initial angles
+            .on("click", function(event, d) {
+                pieTooltip.style("display", "block")
+                    .style("left", `${event.pageX}px`)
+                    .style("top", `${event.pageY}px`)
+                    .html(`<strong>${d.data.label}:</strong> ${d.data.value.toFixed(1)}%<br>${d.data.description}`);
+                
+                const isSelected = d3.select(this).classed("exploded");
+                if (!isSelected) {
+                    d3.select(this)
+                        .transition()
+                        .duration(700)
+                        .attr("d", expandedArc(d))
+                        .ease(d3.easeBounce);
+                    d3.select(this).classed("exploded", true);
+                } else {
+                    d3.select(this)
+                        .transition()
+                        .duration(400)
+                        .attr("d", arc(d));
+                    d3.select(this).classed("exploded", false);
+                }
+            })
             .merge(arcs)
             .transition()
             .duration(1000)
-            .attrTween("d", function (d) {
-                const i = d3.interpolate(this._current || d, d);
-                this._current = i(0);
-                return t => arc(i(t));
+            .attrTween("d", function(d) {
+                const interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return t => arc(interpolate(t));
             });
 
-        arcs.exit().remove();
-
-        // Add text labels to pie slices
-        const text = pieSvg.selectAll("text")
-            .data(pie(pieData));
-
-        text.enter().append("text")
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .style("fill", "#FFF")
-            .style("font-size", "12px")
-            .merge(text)
+        arcs.exit()
             .transition()
             .duration(1000)
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
-            .text(d => `${d.data.value.toFixed(1)}%`);
+            .attrTween("d", function(d) {
+                const interpolate = d3.interpolate(d, { startAngle: 0, endAngle: 0 });
+                return t => arc(interpolate(t));
+            })
+            .remove();
 
-        text.exit().remove();
+        // Add total deaths text in the center
+        pieSvg.selectAll(".total-deaths").remove(); // Remove any existing text
+        pieSvg.append("text")
+            .attr("class", "total-deaths")
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .style("font-size", "24px")
+            .style("fill", "#FFF")
+            .html(`<strong>Total Deaths:</strong> ${data.deaths}`);
     }
 }
 
