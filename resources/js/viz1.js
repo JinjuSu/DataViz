@@ -270,6 +270,9 @@ function init() {
         d3.select(".reset-tooltips").on("click", function () {
             tooltip.style("display", "none");
             pieTooltip.style("display", "none");
+
+            // Trigger confetti effect
+            triggerConfetti();
         });
     });
 
@@ -352,13 +355,34 @@ function init() {
 
         // Add total deaths text in the center
         pieSvg.selectAll(".total-deaths").remove(); // Remove any existing text
-        pieSvg.append("text")
+        const textGroup = pieSvg.append("g")
             .attr("class", "total-deaths")
             .attr("text-anchor", "middle")
             .attr("dy", "0.35em")
-            .style("font-size", "24px")
-            .style("fill", "#FFF")
-            .html(`<strong>Total Deaths:</strong> ${data.deaths}`);
+            .style("font-size", "16px")
+            .style("fill", "#FFF");
+
+        textGroup.append("text")
+            .attr("class", "death-label")
+            .attr("y", -10)
+            .text("Number of Deaths:");
+
+        textGroup.append("text")
+            .attr("class", "death-number")
+            .attr("y", 10)
+            .style("font-weight", "bold")
+            .style("font-size", "20px")
+            .text(`${data.deaths}`);
+    }
+
+    function triggerConfetti() {
+        const confettiContainer = d3.select("body").append("div").attr("class", "confetti-container");
+        for (let i = 0; i < 100; i++) {
+            const confetti = confettiContainer.append("div").attr("class", "confetti");
+            confetti.style("left", `${Math.random() * 100}%`);
+            confetti.style("animation-delay", `${Math.random() * 5}s`);
+        }
+        setTimeout(() => confettiContainer.remove(), 6000); // Remove confetti after 6 seconds
     }
 }
 
