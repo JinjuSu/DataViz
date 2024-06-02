@@ -4,7 +4,7 @@ function init() {
     var h = 600 - margin.top - margin.bottom;
     var padding = 50;
 
-    var dataset, xScale, yScale, xAxis, yAxis, svg, pieSvg;
+    var dataset, xScale, yScale, xAxis, yAxis, svg, pieSvg, selectedSegment = null;
 
     var formatTime = d3.timeFormat("%Y");
 
@@ -271,8 +271,15 @@ function init() {
             tooltip.style("display", "none");
             pieTooltip.style("display", "none");
 
-            // Trigger confetti effect
-            triggerConfetti();
+            if (selectedSegment) {
+                d3.select(selectedSegment)
+                    .transition()
+                    .duration(400)
+                    .attr("d", arc(d3.select(selectedSegment).data()[0]));
+                d3.select(selectedSegment).classed("exploded", false);
+                selectedSegment = null;
+                resetInfoBoxes();
+            }
         });
     });
 
@@ -314,12 +321,24 @@ function init() {
             .style("stroke-width", "2px")
             .each(function(d) { this._current = { startAngle: 0, endAngle: 0 }; }) // Store the initial angles
             .on("click", function(event, d) {
-                pieTooltip.style("display", "block")
-                    .style("left", `${event.pageX}px`)
-                    .style("top", `${event.pageY}px`)
-                    .html(`<strong>${d.data.label}:</strong> ${d.data.value.toFixed(1)}%<br>${d.data.description}`);
-                
                 const isSelected = d3.select(this).classed("exploded");
+
+                if (selectedSegment && selectedSegment !== this) {
+                    d3.select(selectedSegment)
+                        .transition()
+                        .duration(400)
+                        .attr("d", arc(d3.select(selectedSegment).data()[0]));
+                    d3.select(selectedSegment).classed("exploded", false);
+                }
+
+                if (isSelected) {
+                    resetInfoBoxes();
+                } else {
+                    d3.selectAll(".info-box.type-of-death").text(d.data.label);
+                    d3.selectAll(".info-box.death-percentage").text(`${d.data.value.toFixed(1)}%`);
+                    d3.selectAll(".info-box.death-description").text(d.data.description);
+                }
+
                 if (!isSelected) {
                     d3.select(this)
                         .transition()
@@ -327,12 +346,14 @@ function init() {
                         .attr("d", expandedArc(d))
                         .ease(d3.easeBounce);
                     d3.select(this).classed("exploded", true);
+                    selectedSegment = this;
                 } else {
                     d3.select(this)
                         .transition()
                         .duration(400)
                         .attr("d", arc(d));
                     d3.select(this).classed("exploded", false);
+                    selectedSegment = null;
                 }
             })
             .merge(arcs)
@@ -375,14 +396,10 @@ function init() {
             .text(`${data.deaths}`);
     }
 
-    function triggerConfetti() {
-        const confettiContainer = d3.select("body").append("div").attr("class", "confetti-container");
-        for (let i = 0; i < 100; i++) {
-            const confetti = confettiContainer.append("div").attr("class", "confetti");
-            confetti.style("left", `${Math.random() * 100}%`);
-            confetti.style("animation-delay", `${Math.random() * 5}s`);
-        }
-        setTimeout(() => confettiContainer.remove(), 6000); // Remove confetti after 6 seconds
+    function resetInfoBoxes() {
+        d3.selectAll(".info-box.type-of-death").text("Type of Death: ");
+        d3.selectAll(".info-box.death-percentage").text("Death Proportion Percentage: ");
+        d3.selectAll(".info-box.death-description").text("Description: ");
     }
 }
 

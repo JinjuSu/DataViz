@@ -25,11 +25,13 @@
             <h1 id="viz-title" class="transition">What are the number and proportion of deaths in Australia?</h1>
         </div>
 
+        <button class="reset-tooltips">RESET</button>
+
         <div class="flex-container">
             <div class="chart-container">
                 <div>
                     <p id="line-chart"></p>
-                    <div class="legend">
+                    <div class="legend line-legend">
                         <div class="legend-item">
                             <span class="color-box" style="background-color: #648FFF;"></span> Total Deaths
                         </div>
@@ -42,15 +44,14 @@
                     </div>
                 </div>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="position: relative;">
                 <div id="pie-chart-container">
                     <p id="pie-chart"></p>
-                    <button class="reset-tooltips">RESET TOOLTIPS</button>
                     <div class="click-me">
                         <p>Click Me!</p>
                         <div class="arrow"></div>
                     </div>
-                    <div class="legend">
+                    <div class="legend pie-legend">
                         <div class="legend-item">
                             <span class="color-box" style="background-color: #648FFF;"></span> Cardiovascular
                         </div>
@@ -69,6 +70,11 @@
                         <div class="legend-item">
                             <span class="color-box" style="background-color: #00D200;"></span> Other
                         </div>
+                    </div>
+                    <div class="info-box-container">
+                        <div class="info-box type-of-death">Cardiovascular</div>
+                        <div class="info-box death-percentage">24.9%</div>
+                        <div class="info-box death-description">Cardiovascular diseases include heart diseases and strokes.</div>
                     </div>
                 </div>
             </div>
