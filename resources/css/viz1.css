@@ -66,6 +66,10 @@ p.sub-header {
   position: relative; /* For positioning the buttons */
 }
 
+#pie-chart{
+  padding-left: 10%;
+}
+
 .info-container {
   display: flex;
   justify-content: center;
@@ -141,6 +145,7 @@ body .tooltip {
   cursor: pointer;
   font-weight: bold;
   border-radius: 5px;
+  margin-left: 130px;
 }
 
 .click-me {
@@ -210,4 +215,8 @@ body .tooltip {
   height: 20px;
   margin-right: 5px;
   background-color: grey;
+}
+
+.line-legend {
+  margin-top: -2px; /* Move legend closer to the chart */
 }

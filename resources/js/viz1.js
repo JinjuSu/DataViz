@@ -262,7 +262,7 @@ function init() {
             .attr("width", 400)
             .attr("height", 400)
             .append("g")
-            .attr("transform", "translate(200,200)");
+            .attr("transform", "translate(200,200)"); // Centering the pie chart within the container
 
         // Initialize pie chart with default state
         updatePieChart();
