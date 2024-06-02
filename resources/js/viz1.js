@@ -15,6 +15,7 @@ function init() {
     d3.csv("resources/dataset/aihw/viz1dataset.csv", function (d) {
         return {
             year: new Date(d.year, 0, 1),
+            year2: +d.year,
             deaths: +d.totalDeaths,
             avoidableDeaths: +d.avoidableDeaths,
             unavoidableDeaths: +d.unavoidableDeaths,
@@ -263,57 +264,53 @@ function init() {
             .append("g")
             .attr("transform", "translate(200,200)");
 
-        // Initialize pie chart with the latest year's data
-        updatePieChart(dataset[dataset.length - 1]);
+        // Initialize pie chart with default state
+        updatePieChart();
 
         // Reset tooltips button functionality
         d3.select(".reset-tooltips").on("click", function () {
-            tooltip.style("display", "none");
-            pieTooltip.style("display", "none");
-
-            if (selectedSegment) {
-                d3.select(selectedSegment)
-                    .transition()
-                    .duration(400)
-                    .attr("d", arc(d3.select(selectedSegment).data()[0]));
-                d3.select(selectedSegment).classed("exploded", false);
-                selectedSegment = null;
-                resetInfoBoxes();
-            }
+            resetToDefaultState();
         });
     });
 
     function updatePieChart(data) {
-        const pieData = [
+        const pieData = data ? [
             { label: "Cardiovascular", value: data.cardiovascularPercentage, description: "Cardiovascular diseases include heart diseases and strokes." },
             { label: "Cancer", value: data.cancerPercentage, description: "Cancer includes all types of cancerous diseases." },
             { label: "Respiratory", value: data.respiratoryPercentage, description: "Respiratory diseases include asthma, bronchitis, and others." },
             { label: "Infectious", value: data.infectiousPercentage, description: "Infectious diseases include viral, bacterial, and other infections." },
             { label: "Injury", value: data.injuryPercentage, description: "Injuries include accidents, self-harm, and other physical injuries." },
             { label: "Other", value: data.otherPercentage, description: "Other includes all other causes of death not categorized above." }
+        ] : [
+            { label: "Cardiovascular", value: 0, description: "" },
+            { label: "Cancer", value: 0, description: "" },
+            { label: "Respiratory", value: 0, description: "" },
+            { label: "Infectious", value: 0, description: "" },
+            { label: "Injury", value: 0, description: "" },
+            { label: "Other", value: 0, description: "" }
         ];
-
+    
         const colorScale = d3.scaleOrdinal()
             .domain(pieData.map(d => d.label))
             .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000", "#00D200"]);
-
+    
         const pie = d3.pie().value(d => d.value).sort(null);
-
+    
         const arc = d3.arc()
             .innerRadius(100) // Adjusted inner radius to create a thinner doughnut chart
             .outerRadius(150)
             .padAngle(0.01)
             .cornerRadius(5);
-
+    
         const expandedArc = d3.arc()
             .innerRadius(100) // Adjusted inner radius for expanded state
             .outerRadius(180)
             .padAngle(0.01)
             .cornerRadius(5);
-
+    
         const arcs = pieSvg.selectAll(".arc")
             .data(pie(pieData), d => d.data.label); // Use label as key for data binding
-
+    
         arcs.enter().append("path")
             .attr("class", "arc")
             .attr("fill", d => colorScale(d.data.label))
@@ -322,7 +319,7 @@ function init() {
             .each(function(d) { this._current = { startAngle: 0, endAngle: 0 }; }) // Store the initial angles
             .on("click", function(event, d) {
                 const isSelected = d3.select(this).classed("exploded");
-
+    
                 if (selectedSegment && selectedSegment !== this) {
                     d3.select(selectedSegment)
                         .transition()
@@ -330,7 +327,7 @@ function init() {
                         .attr("d", arc(d3.select(selectedSegment).data()[0]));
                     d3.select(selectedSegment).classed("exploded", false);
                 }
-
+    
                 if (isSelected) {
                     resetInfoBoxes();
                 } else {
@@ -338,7 +335,7 @@ function init() {
                     d3.selectAll(".info-box.death-percentage").text(`${d.data.value.toFixed(1)}%`);
                     d3.selectAll(".info-box.death-description").text(d.data.description);
                 }
-
+    
                 if (!isSelected) {
                     d3.select(this)
                         .transition()
@@ -364,7 +361,7 @@ function init() {
                 this._current = interpolate(0);
                 return t => arc(interpolate(t));
             });
-
+    
         arcs.exit()
             .transition()
             .duration(1000)
@@ -373,7 +370,7 @@ function init() {
                 return t => arc(interpolate(t));
             })
             .remove();
-
+    
         // Add total deaths text in the center
         pieSvg.selectAll(".total-deaths").remove(); // Remove any existing text
         const textGroup = pieSvg.append("g")
@@ -382,24 +379,33 @@ function init() {
             .attr("dy", "0.35em")
             .style("font-size", "16px")
             .style("fill", "#FFF");
-
+    
         textGroup.append("text")
             .attr("class", "death-label")
             .attr("y", -10)
-            .text("Number of Deaths:");
-
+            .text("Year");
+    
         textGroup.append("text")
             .attr("class", "death-number")
             .attr("y", 10)
             .style("font-weight", "bold")
             .style("font-size", "20px")
-            .text(`${data.deaths}`);
+            .text(data ? `${data.year2}` : "");
     }
 
+    function resetToDefaultState() {
+        d3.selectAll(".selected-circle").classed("selected-circle", false).attr("r", 3).style("stroke", "none");
+        d3.select(".hover-line").attr("opacity", 0);
+        tooltip.style("display", "none");
+        pieTooltip.style("display", "none");
+        resetInfoBoxes();
+        updatePieChart();
+    }
+    
     function resetInfoBoxes() {
-        d3.selectAll(".info-box.type-of-death").text("Type of Death: ");
-        d3.selectAll(".info-box.death-percentage").text("Death Proportion Percentage: ");
-        d3.selectAll(".info-box.death-description").text("Description: ");
+        d3.selectAll(".info-box.type-of-death").text("Death Cause");
+        d3.selectAll(".info-box.death-percentage").text("Death Proportion Percentage");
+        d3.selectAll(".info-box.death-description").text("Description");
     }
 }
 
