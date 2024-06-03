@@ -6,28 +6,28 @@ body {
     font-family: "Inter", sans-serif;
     background-color: #140F24;
     color: #FFFFFF;
-    margin: 0; /* Removed margin for full-width background */
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden; /* Prevent scroll */
+    overflow: hidden;
 }
 
 /* Typography */
 h1 {
-    font-size: 48px; /* Reduced font size */
+    font-size: 48px;
     font-weight: bold;
     text-align: center;
 }
 
 p {
-    font-size: 12px; /* Reduced font size */
+    font-size: 12px;
     text-align: center;
 }
 
 p.sub-header {
-    font-size: 20px; /* Reduced font size */
+    font-size: 20px;
     text-align: center;
 }
 
@@ -42,14 +42,14 @@ p.sub-header {
     max-width: 90%;
     padding: 20px;
     box-sizing: border-box;
-    z-index: 2; /* Ensure the content is above the background animation */
+    z-index: 2;
 }
 
 /* Button Styles */
 .btn-start {
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 20px; /* Reduced font size */
+    font-size: 20px;
     font-weight: bold;
     text-transform: uppercase;
     color: #FFFFFF;
@@ -96,6 +96,7 @@ p.sub-header {
     opacity: 1;
 }
 
+/* Loading Animation (Source: https://codepen.io/r4ms3s/pen/XJqeKB) */
 .loading {
     position: absolute;
     left: 50%;
@@ -194,7 +195,7 @@ p.sub-header {
     background: #4492f4;
 }
 
-/* Animations */
+/* Animations for fingers */
 @keyframes finger-1-animation {
     0%, 20%, 41%, 100% { padding: 12px 0 5px 0; }
     29%, 35% { padding: 4px 0 24px 0; }
@@ -260,7 +261,7 @@ p.sub-header {
     43%, 50% { top: 20px; right: 2px; border-radius: 0 8px 20px 0; transform: rotate(-12deg); }
 }
 
-/* Binary Background Animation */
+/* Binary Background Animation (Source: https://codepen.io/r4ms3s/pen/XJqeKB)*/
 @keyframes moveBinary {
     0% { top: -100%; }
     100% { top: 100%; }
@@ -273,13 +274,13 @@ p.sub-header {
     top: 0;
     left: 0;
     overflow: hidden;
-    z-index: 1; /* Ensure the background is behind the content */
+    z-index: 1;
 }
 
 .binary-background span {
     position: absolute;
     color: rgba(255, 255, 255, 0.05);
-    font-size: 20px; /* Adjust size as needed */
+    font-size: 20px;
     animation: moveBinary 10s linear infinite;
 }
 
