@@ -1,0 +1,227 @@
+/* Import font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+/* General Body Styles */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #140F24;
+  color: #FFFFFF;
+  margin: 40px;
+}
+
+/* Typography */
+h1 {
+  font-size: 64px;
+  font-weight: bold;
+}
+
+h2#viz-title {
+  text-align: center;
+}
+
+h2 {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 36px;
+}
+
+p {
+  font-size: 18px;
+}
+
+p.sub-header {
+  font-size: 24px;
+}
+
+/* Flex Container Setup */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.flex-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#pie-chart {
+  padding-left: 10%;
+}
+
+.info-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.info-box {
+  background-color: #333;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* Line Chart Style */
+.line {
+  fill: none;
+  stroke: #648FFF;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+.line2 {
+  fill: none;
+  stroke: #DC267F;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+.line3 {
+  fill: none;
+  stroke: #785EF0;
+  stroke-width: 5;
+  transition: stroke 0.2s ease;
+}
+
+rect {
+  pointer-events: all;
+  fill-opacity: 0;
+  stroke-opacity: 0;
+  z-index: 1;
+}
+
+/* Tooltip styles */
+body .tooltip {
+  position: absolute;
+  padding: 10px;
+  background-color: steelblue;
+  color: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  display: none;
+  opacity: 0.75;
+}
+
+.pie-tooltip {
+  position: absolute;
+  padding: 10px;
+  background-color: #333;
+  color: #FFF;
+  border: 1px solid #FFF;
+  border-radius: 5px;
+  display: none;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Reset tooltips button */
+.reset-tooltips {
+  background-color: #FE6100;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-left: 130px;
+}
+
+/* Click me label */
+.click-me {
+  position: absolute;
+  top: -60px; /* Position above the doughnut chart */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* Arrow inside the "click me" label */
+.click-me .arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 20px solid #FFFFFF;
+  margin-bottom: 5px;
+  animation: pulse 1.5s infinite; /* Pulsing animation */
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Source Citation */
+.source p {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.center-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.legend-line-chart {
+  justify-content: flex-start;
+  margin-left: 30px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  background-color: grey;
+}
+
+.line-legend {
+  margin-top: -10px;
+}
