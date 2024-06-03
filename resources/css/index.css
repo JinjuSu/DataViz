@@ -1,0 +1,292 @@
+/* Import font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+/* General Body Styles */
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #140F24;
+    color: #FFFFFF;
+    margin: 0; /* Removed margin for full-width background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Prevent scroll */
+}
+
+/* Typography */
+h1 {
+    font-size: 48px; /* Reduced font size */
+    font-weight: bold;
+    text-align: center;
+}
+
+p {
+    font-size: 12px; /* Reduced font size */
+    text-align: center;
+}
+
+p.sub-header {
+    font-size: 20px; /* Reduced font size */
+    text-align: center;
+}
+
+/* Center content */
+.intro-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 90%;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 2; /* Ensure the content is above the background animation */
+}
+
+/* Button Styles */
+.btn-start {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 20px; /* Reduced font size */
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background-color: #FE6100;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-start:hover {
+    background-color: #ff8300;
+}
+
+/* Loading Page Styles */
+.loading-page {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #140F24;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 1s ease;
+    z-index: 10;
+}
+
+.loading-page.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-container {
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 5;
+    position: relative;
+}
+
+.intro-container.visible {
+    opacity: 1;
+}
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -35px 0 0 -56px;
+    width: 112px;
+    height: 70px;
+}
+
+.finger {
+    float: left;
+    margin: 0 2px 0 0;
+    width: 20px;
+    height: 100%;
+}
+
+.finger-1 {
+    animation: finger-1-animation 2s infinite ease-out;
+}
+
+.finger-2 {
+    animation: finger-2-animation 2s infinite ease-out;
+}
+
+.finger-3 {
+    animation: finger-3-animation 2s infinite ease-out;
+}
+
+.finger-4 {
+    animation: finger-4-animation 2s infinite ease-out;
+}
+
+.finger-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px 6px 8px 8px;
+    background: #fff;
+}
+
+.finger-item span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 5px 5px 0 5px;
+}
+
+.finger-item i {
+    position: absolute;
+    left: 3px;
+    bottom: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 10px 10px 7px 7px;
+    background: #4492f4;
+}
+
+.last-finger {
+    position: relative;
+    float: left;
+    width: 24px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.last-finger-item {
+    position: absolute;
+    right: 0;
+    top: 32px;
+    width: 110%;
+    height: 20px;
+    border-radius: 0 5px 14px 0;
+    background: #fff;
+    animation: finger-5-animation 2s infinite linear;
+}
+
+.last-finger-item i {
+    position: absolute;
+    left: 0;
+    top: -8px;
+    width: 22px;
+    height: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.last-finger-item i:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 34px;
+    height: 20px;
+    border-radius: 0 0 15px 15px;
+    background: #4492f4;
+}
+
+/* Animations */
+@keyframes finger-1-animation {
+    0%, 20%, 41%, 100% { padding: 12px 0 5px 0; }
+    29%, 35% { padding: 4px 0 24px 0; }
+}
+
+@keyframes finger-1-animation-span {
+    0%, 20%, 41%, 100% { top: 0; }
+    29%, 35% { top: -7px; }
+}
+
+@keyframes finger-1-animation-i {
+    0%, 20%, 41%, 100% { bottom: 3px; height: 14px; border-radius: 10px 10px 7px 7px; }
+    29%, 35% { bottom: 8px; height: 12px; border-radius: 7px 7px 4px 4px; }
+}
+
+@keyframes finger-2-animation {
+    0%, 24%, 45%, 100% { padding: 6px 0 2px 0; }
+    33%, 39% { padding: 2px 0 16px 0; }
+}
+
+@keyframes finger-2-animation-span {
+    0%, 24%, 45%, 100% { top: 0; }
+    33%, 39% { top: -7px; }
+}
+
+@keyframes finger-2-animation-i {
+    0%, 24%, 45%, 100% { bottom: 3px; height: 14px; border-radius: 10px 10px 7px 7px; }
+    33%, 39% { bottom: 8px; height: 12px; border-radius: 7px 7px 4px 4px; }
+}
+
+@keyframes finger-3-animation {
+    0%, 28%, 49%, 100% { padding: 0; }
+    37%, 43% { padding: 0 0 12px 0; }
+}
+
+@keyframes finger-3-animation-span {
+    0%, 28%, 49%, 100% { top: 0; }
+    37%, 43% { top: -7px; }
+}
+
+@keyframes finger-3-animation-i {
+    0%, 28%, 49%, 100% { bottom: 3px; height: 14px; border-radius: 10px 10px 7px 7px; }
+    37%, 43% { bottom: 8px; height: 12px; border-radius: 7px 7px 4px 4px; }
+}
+
+@keyframes finger-4-animation {
+    0%, 32%, 53%, 100% { padding: 8px 0 3px 0; }
+    41%, 47% { padding: 4px 0 20px 0; }
+}
+
+@keyframes finger-4-animation-span {
+    0%, 32%, 53%, 100% { top: 0; }
+    41%, 47% { top: -7px; }
+}
+
+@keyframes finger-4-animation-i {
+    0%, 32%, 53%, 100% { bottom: 3px; height: 14px; border-radius: 10px 10px 7px 7px; }
+    41%, 47% { bottom: 8px; height: 12px; border-radius: 7px 7px 4px 4px; }
+}
+
+@keyframes finger-5-animation {
+    0%, 34%, 60%, 100% { top: 32px; right: 0; border-radius: 0 5px 14px 0; transform: rotate(0deg); }
+    43%, 50% { top: 20px; right: 2px; border-radius: 0 8px 20px 0; transform: rotate(-12deg); }
+}
+
+/* Binary Background Animation */
+@keyframes moveBinary {
+    0% { top: -100%; }
+    100% { top: 100%; }
+}
+
+.binary-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1; /* Ensure the background is behind the content */
+}
+
+.binary-background span {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.05);
+    font-size: 20px; /* Adjust size as needed */
+    animation: moveBinary 10s linear infinite;
+}
+
+.binary-background span:nth-child(odd) {
+    animation-duration: 8s;
+}
+
+.binary-background span:nth-child(even) {
+    animation-duration: 12s;
+}

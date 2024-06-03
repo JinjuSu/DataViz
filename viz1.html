@@ -21,15 +21,18 @@
 </head>
 <body>
     <div class="content">
+        <!-- Title of Page-->
         <div class="center-title">
             <h1 id="viz-title" class="transition">What are the number and proportion of deaths in Australia?</h1>
         </div>
 
+        <!-- Reset Button -->
         <button class="reset-tooltips">RESET</button>
 
         <div class="flex-container">
             <div class="chart-container">
                 <div>
+                    <!-- Line Chart & Hue Legends -->
                     <p id="line-chart"></p>
                     <div class="legend line-legend">
                         <div class="legend-item">
@@ -44,6 +47,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pie Chart & Hue Legends -->
             <div class="chart-container" style="position: relative;">
                 <div id="pie-chart-container">
                     <p id="pie-chart"></p>
@@ -71,6 +76,8 @@
                             <span class="color-box" style="background-color: #00D200;"></span> Other
                         </div>
                     </div>
+
+                    <!-- Information Boxes -->
                     <div class="info-box-container">
                         <div class="info-box type-of-death">Death Cause</div>
                         <div class="info-box death-percentage">Death Proportion Percentage</div>
@@ -87,11 +94,15 @@
             </div>
         </div>
 
+        <!-- Page Description -->
         <p>
-            The visualizations present a comprehensive analysis of the number and proportion of avoidable and unavoidable deaths in Australia from 1997 to 2021. The line chart on the left illustrates the trends in total deaths, avoidable deaths, and unavoidable deaths over the specified period. Each line is distinctly colored for clarity: green for total deaths, orange for avoidable deaths, and blue for unavoidable deaths. The years on the line chart can be clicked to reveal the exact data points for that year, enhancing data inspection with a corresponding vertical line for better visual guidance.
-            <br><br>
-
-            On the right, the pie chart provides a snapshot of the relative proportions of avoidable and unavoidable deaths for the selected year. The colors match the lines in the left chart for consistency: orange for avoidable deaths and blue for unavoidable deaths. Additionally, the segments of the pie chart can be clicked on to gain more detailed information about each type of death. This combination of visualizations effectively highlights both the trends over time and the proportional breakdown for any given year, providing a clear and interactive way to understand changes and distributions in mortality causes in Australia.
+            The visualizations present a comprehensive analysis of the number and proportion of avoidable and unavoidable deaths in Australia from 1997 to 2021. The line chart on the left illustrates the trends in total deaths, avoidable deaths, and unavoidable deaths over the specified period. Each line is distinctly colored for clarity: blue for total deaths, purple for avoidable deaths, and red for unavoidable deaths. The chart highlights concerning trends and provides a visual representation of how these numbers have changed over the years. Clicking on the years reveals exact data points, allowing for a detailed inspection of the data.
+        </p>
+        <p>
+            The doughnut chart on the right offers a snapshot of the relative proportions of different causes of death for the selected year. It categorizes deaths into cardiovascular, cancer, respiratory, infectious, injury, and other causes. From 1997 to 2021, cardiovascular diseases, cancer, and respiratory diseases have consistently been the top three causes of death. Cardiovascular diseases, represented in blue, include conditions like heart disease and stroke. Cancer, shown in purple, covers all types of cancerous diseases. Respiratory diseases, in red, include chronic conditions like asthma and bronchitis.
+        </p>
+        <p>
+            There is a significant association between obesity and the trends observed in these visualizations. Obesity is a known risk factor for many cardiovascular diseases, certain types of cancer, and respiratory conditions. The increasing trends in these categories may reflect the rising prevalence of obesity over the same period. Public health efforts aimed at reducing obesity through lifestyle changes, such as improved diet and increased physical activity, could have a substantial impact on reducing these leading causes of death.
         </p>
     </div>
 

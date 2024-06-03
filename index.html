@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Data Visualization" />
-    <meta name="keywords" content="HTML, CSS, D3, Javascript" />
-    <meta name="Author" content="Jinjuta Suksuwan Thursday 9:30 - 10:30AM" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Data Visualization">
+    <meta name="keywords" content="HTML, CSS, D3, Javascript">
+    <meta name="name" content="Darrell Devlin">
 
-    <!-- Import d3.js v7 -->
-    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <title>Our Website</title>
 
-    <!-- Import custom d3.js -->
-    <script src="resources/js/viz1.js" defer></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Import main.css -->
-    <link rel="stylesheet" href="resources/css/main.css" />
+    <!--CSS -->
+    <link rel="stylesheet" href="resources/css/viz1.css">
+    <link rel="stylesheet" href="resources/css/index.css">
 
-    <!-- Import Boostrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-
-    <title>Landing Page</title>
-  </head>
-  <body>
-    <div class="container my-5 text-center">
-      <h1>Thiss is Introduction page</h1>
-      <!-- Buttons -->
-      <div class="row my-5">
-        <!-- Previous button -->
-        <div class="col-4">
-          <a href="#">
-            <button
-              class="btn btn-lg btn-outline-primary text-uppercase fs-5 fw-bold"
-            >
-              Previous
-            </button>
-          </a>
+</head>
+<body>
+    <!-- Loading Page -->
+    <div class="loading-page">
+        <div class="loading">
+            <div class="finger finger-1">
+                <div class="finger-item">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <div class="finger finger-2">
+                <div class="finger-item">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <div class="finger finger-3">
+                <div class="finger-item">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <div class="finger finger-4">
+                <div class="finger-item">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <div class="last-finger">
+                <div class="last-finger-item"><i></i></div>
+            </div>
         </div>
-        <!-- Next Button -->
-        <div class="col-4 ms-auto right-align">
-          <a href="viz1.html">
-            <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold">
-              Next
-            </button>
-          </a>
-        </div>
-      </div>
     </div>
-  </body>
+
+    <!-- Main Content -->
+    <div class="intro-container">
+        <div class="intro-content">
+            <h1>Welcome to Our Website</h1>
+            <p class="sub-header"><b>Created By:</b> Darrell Devlin and Jinjuta Suksuwan</p>
+            <p class="description">
+                This website is the culmination of a data visualization assignment for the unit COS30045, created by Darrell and Jinju. Our goal was to leverage the power of data visualization to make complex datasets more accessible and understandable. We invite you to explore our visualizations, delve into the data, and join us in our quest to better understand the factors influencing obesity and mortality.
+            </p>
+            <!-- Start Exploring Button -->
+            <a href="viz1.html">
+                <button class="btn btn-lg btn-primary text-uppercase fs-5 fw-bold btn-start">Start Exploring</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="resources/js/index.js"></script>
+</body>
 </html>

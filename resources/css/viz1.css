@@ -1,4 +1,4 @@
-/* Import font */
+/* Import font from Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
 /* General Body Styles */
@@ -6,7 +6,7 @@ body {
   font-family: "Inter", sans-serif;
   background-color: #140F24;
   color: #FFFFFF;
-  margin: 40px; /* sets margin on all sides */
+  margin: 40px;
 }
 
 /* Typography */
@@ -16,7 +16,7 @@ h1 {
 }
 
 h2#viz-title {
-  text-align: center; /* Centers the title text */
+  text-align: center;
 }
 
 h2 {
@@ -39,9 +39,9 @@ p.sub-header {
 /* Flex Container Setup */
 .content {
   display: flex;
-  flex-direction: column; /* Stacks children vertically */
-  align-items: center; /* Center content horizontally */
-  width: 100%; /* Ensures the container takes full width */
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .button-container {
@@ -53,20 +53,20 @@ p.sub-header {
 
 .flex-container {
   display: flex;
-  width: 100%; /* Full width to contain both charts */
-  justify-content: space-between; /* Space between items */
-  align-items: center; /* Align items to the center vertically */
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .chart-container {
-  flex: 1; /* Equal space for both charts */
+  flex: 1;
   display: flex;
-  justify-content: center; /* Center the content inside */
-  align-items: center; /* Center the content inside */
-  position: relative; /* For positioning the buttons */
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-#pie-chart{
+#pie-chart {
   padding-left: 10%;
 }
 
@@ -114,6 +114,7 @@ rect {
   z-index: 1;
 }
 
+/* Tooltip styles */
 body .tooltip {
   position: absolute;
   padding: 10px;
@@ -137,6 +138,7 @@ body .tooltip {
   pointer-events: none;
 }
 
+/* Reset tooltips button */
 .reset-tooltips {
   background-color: #FE6100;
   color: white;
@@ -148,9 +150,10 @@ body .tooltip {
   margin-left: 130px;
 }
 
+/* Click me label */
 .click-me {
   position: absolute;
-  top: -60px; /* Adjusted to be right above the doughnut chart */
+  top: -60px; /* Position above the doughnut chart */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -161,6 +164,7 @@ body .tooltip {
   font-size: 20px;
 }
 
+/* Arrow inside the "click me" label */
 .click-me .arrow {
   width: 0;
   height: 0;
@@ -168,7 +172,7 @@ body .tooltip {
   border-right: 10px solid transparent;
   border-top: 20px solid #FFFFFF;
   margin-bottom: 5px;
-  animation: pulse 1.5s infinite;
+  animation: pulse 1.5s infinite; /* Pulsing animation */
 }
 
 @keyframes pulse {
@@ -179,9 +183,9 @@ body .tooltip {
 
 /* Source Citation */
 .source p {
-  text-align: center; /* Centers text */
-  font-size: 12px; /* Smaller font size */
-  color: #666; /* Lighter color */
+  text-align: center;
+  font-size: 12px;
+  color: #666;
 }
 
 .center-title {
@@ -192,6 +196,7 @@ body .tooltip {
   margin-bottom: 20px;
 }
 
+/* Legend */
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -218,5 +223,5 @@ body .tooltip {
 }
 
 .line-legend {
-  margin-top: -2px; /* Move legend closer to the chart */
+  margin-top: -10px;
 }
