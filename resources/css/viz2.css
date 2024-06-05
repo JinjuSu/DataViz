@@ -120,6 +120,7 @@ p {
   height: 150px;
   padding: 16px;
   position: relative;
+  border-radius: 8px;
 }
 
 .bubble-card-body {
