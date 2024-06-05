@@ -2,10 +2,10 @@
   color: #ffffff;
   background-color: #140f24;
   font-family: "inter", sans-serif;
-  margin: 40px; /* sets margin on all sides */
+  margin: 40px;
 }
 
-/* Typography */
+/* Typography
 h1 {
   font-size: 64px;
   font-weight: bold;
@@ -13,7 +13,7 @@ h1 {
 
 h2 #viz-title {
   text-align: center; /* Centers the title text */
-}
+/* }
 
 h2 {
   font-size: 50px;
@@ -87,30 +87,31 @@ p {
   stroke: blue;
 }
 
-rect {
+/* rect {
   pointer-events: all;
   fill-opacity: 0;
   stroke-opacity: 0;
   z-index: 1;
-}
+} */
 
-body .tooltip {
-  position: absolute;
+.tooltip {
+  background-color: rgba(12, 45, 73, 0.8);
   padding: 10px;
-  background-color: steelblue;
   color: white;
-  border: 1px solid white;
   border-radius: 10px;
   display: none;
   opacity: 0.75;
 }
 
 .bubbles {
-  stroke-width: 2px;
+  stroke-width: 1px;
   stroke: white;
+  opacity: 0.7;
 }
 .bubbles:hover {
-  stroke: black;
+  stroke-width: 2px;
+  stroke: white;
+  opacity: 1;
 }
 
 .bubble-card {
@@ -178,4 +179,9 @@ body .tooltip {
 .sub-header {
   font-size: 24px;
   font-weight: bold;
+}
+
+svg text {
+  fill: white;
+  font-size: 12px; /* Set appropriate font size if needed */
 }

@@ -1,0 +1,16 @@
+Alcohol consumption,Total Overweight, Daily consumption of fruit and vegetables, Current daily smoker, Diabetes mellitus(f)
+19806.80,12963.30,19806.80, 2108.90,1348.40
+
+
+      // Style X and Y Axises
+      svg.selectAll(".domain, .tick line").attr("stroke", "white");
+      svg.selectAll(".tick text")
+        .attr("stroke", "white")
+        .style("font-size", 10);
+
+      // Add a scale for bubble color
+
+              const myColor = d3
+        .scaleOrdinal()
+        .domain(["Asia", "Europe", "Americas", "Africa", "Oceania"])
+        .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]); 
