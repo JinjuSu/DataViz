@@ -9,7 +9,7 @@ function init() {
 
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
-    width = 500 - margin.left - margin.right,
+    width = 600 - margin.left - margin.right,
     height = 420 - margin.top - margin.bottom;
   // for circular bar plot
   (innerRadius = 50), (outerRadius = Math.min(width, height) / 2);
@@ -95,29 +95,38 @@ function init() {
   );
   // ----------------- Bubble plot ends here -----------------//
 
-  // ----------------- Cicular bar plot starts here -----------------//
+  // ----------------- Circular bar plot starts here -----------------//
 
-  // append the svg object
+  // append the svg for circular bar plot
   var svgCirBar = d3
     .select("#circularBarPlot")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", width + margin.left + margin.right + 100)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr(
       "transform",
-      "translate(" +
-        (width / 2 + margin.left) +
-        "," +
-        (height / 2 + margin.top) +
-        ")"
+      "translate(" + (width / 2 - 100) + "," + (height / 2 + margin.top) + ")"
     );
+
+  // Highlight functions for the legend
+  var highlight = function (d) {
+    // Reduce opacity of all groups
+    d3.selectAll(".bars").style("opacity", 0.3);
+    // Expect the one that is hovered
+    d3.selectAll("." + d.replace(/ /g, "")).style("opacity", 1);
+  };
+
+  var noHighlight = function (d) {
+    d3.selectAll(".bars").style("opacity", 1);
+  };
 
   d3.csv(dataset7, function (data) {
     // Sort data by Value in descending order
     data.sort(function (a, b) {
       return d3.descending(+a.Value, +b.Value);
     });
+
     // Scales
     var x = d3
       .scaleBand()
@@ -139,7 +148,7 @@ function init() {
         "Alcohol",
         "DailyFruitAndVegetables",
         "Obese",
-        "smoker",
+        "Daily smoker",
         "PhysicalActivity",
       ])
       .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
@@ -151,6 +160,9 @@ function init() {
       .data(data)
       .enter()
       .append("path")
+      .attr("class", function (d) {
+        return "bars " + d.Category.replace(/ /g, "");
+      })
       .attr("fill", function (d) {
         return barColor(d.Category);
       })
@@ -172,42 +184,6 @@ function init() {
           .padRadius(innerRadius)
       );
 
-    // Add the labels
-    svgCirBar
-      .append("g")
-      .selectAll("g")
-      .data(data)
-      .enter()
-      .append("g")
-      .attr("text-anchor", function (d) {
-        return (x(d.Category) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) <
-          Math.PI
-          ? "end"
-          : "start";
-      })
-      .attr("transform", function (d) {
-        return (
-          "rotate(" +
-          (((x(d.Category) + x.bandwidth() / 2) * 180) / Math.PI - 90) +
-          ")" +
-          "translate(" +
-          (y(d["Value"]) + 10) +
-          ",0)"
-        );
-      })
-      .append("text")
-      .text(function (d) {
-        return d.Category;
-      })
-      .attr("transform", function (d) {
-        return (x(d.Category) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) <
-          Math.PI
-          ? "rotate(180)"
-          : "rotate(0)";
-      })
-      .style("font-size", "11px")
-      .attr("alignment-baseline", "middle");
-
     // Add the interactive legend
     var size = 20;
     var allgroups = [
@@ -217,16 +193,18 @@ function init() {
       "Daily smoker",
       "PhysicalActivity",
     ];
+
     svgCirBar
       .selectAll("myrect")
       .data(allgroups)
       .enter()
-      .append("circle")
-      .attr("cx", -width / 2 + 50)
-      .attr("cy", function (d, i) {
+      .append("rect")
+      .attr("x", width / 2 - 7) // Adjust the position of the legend rectangles
+      .attr("y", function (d, i) {
         return -height / 2 + 50 + i * (size + 5);
-      }) // Adjust the position of the legend dots
-      .attr("r", 7)
+      })
+      .attr("width", 14) // Width of the rectangles
+      .attr("height", 14) // Height of the rectangles
       .style("fill", function (d) {
         return barColor(d);
       })
@@ -238,7 +216,7 @@ function init() {
       .data(allgroups)
       .enter()
       .append("text")
-      .attr("x", -width / 2 + 65)
+      .attr("x", width / 2 + 20)
       .attr("y", function (d, i) {
         return -height / 2 + 50 + i * (size + 5) + size / 2;
       }) // Adjust the position of the legend labels
@@ -249,6 +227,7 @@ function init() {
         return d;
       })
       .attr("text-anchor", "left")
+      .style("font-size", "20px")
       .style("alignment-baseline", "middle")
       .on("mouseover", highlight)
       .on("mouseleave", noHighlight);
