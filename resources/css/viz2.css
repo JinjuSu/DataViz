@@ -111,8 +111,7 @@
 }
 .correlation-body {
   font-size: 81px;
-
-  color: #ff4949;
+  font-weight: bold;
 }
 
 .page-title {
@@ -180,4 +179,9 @@ svg text {
   fill: #a09dab5e;
   font-size: 50px;
   font-weight: bold;
+}
+
+.description-content {
+  color: aqua;
+  /* #5721f0 */
 }

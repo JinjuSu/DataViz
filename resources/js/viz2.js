@@ -14,6 +14,27 @@ function init() {
   let barColor;
   let selectedFactor = null;
 
+  let yearDescription;
+  switch (selectedBarDatatSet) {
+    case datasets.dataset1:
+      year = "2007 - 2008";
+      break;
+    case datasets.dataset2:
+      year = "2011 - 2012";
+      break;
+    case datasets.dataset3:
+      year = "2014 - 2015";
+      break;
+    case datasets.dataset4:
+      year = "2017 -  2018";
+      break;
+    case datasets.dataset5:
+      year = "2022";
+      break;
+    default:
+      year = "2022";
+  }
+
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
     if (correlation > 0 && correlation < 0.3) return "#FFE600";
@@ -33,16 +54,36 @@ function init() {
   }
 
   function updateDashboardCards() {
+    console.log("updateDashboardCards is called");
+
     d3.csv(selectedBarDatatSet, function (data) {
-      const summaryData = data[0]; // Assuming the first entry is a summary
+      const summaryData = data[0];
       const correlationColor = getColorForCorrelation(summaryData.correlation);
 
+      // Update the description text
+      document.getElementById("selectedTranslationDescription").innerText =
+        summaryData.translation;
+      document.getElementById("selectedFactorDescription").innerText =
+        summaryData.counts;
+      document.getElementById("selectedTotalDescription").innerText =
+        summaryData.total;
+      document.getElementById("selectedOverweightDescription").innerText =
+        summaryData.obese;
+      document.getElementById("selectedYearDescription").innerText =
+        yearDescription;
+
+      // Update the dashboards
+      console.log(summaryData);
       document.getElementById("selectedCorr").innerText =
         summaryData.correlation;
       document.getElementById("selectedTranslation").innerText =
         summaryData.translation;
       document.getElementById("selectedTotal").innerText = summaryData.total;
-      document.getElementById("selectedObese").innerText = summaryData.obese;
+      document.getElementById("selectedOverweight").innerText =
+        summaryData.obese;
+      document.getElementById("selectedOverweight").innerText =
+        summaryData.obese;
+
       document.getElementById("selectedFactor").innerText =
         summaryData.dashboardlabels;
       document.getElementById("selectedPercent").innerText = summaryData.counts;
@@ -145,7 +186,11 @@ function init() {
         .attr("class", "x-axis-label")
         .attr(
           "transform",
-          "translate(" + width / 2 + " ," + (height + margin.top) + ")"
+          "translate(" +
+            (width / 2 - 50) +
+            " ," +
+            (height + margin.top - 10) +
+            ")"
         )
         .style("text-anchor", "middle")
         .text("Overweight or Obese Population");
@@ -175,8 +220,8 @@ function init() {
         .append("text")
         .attr("class", "y-axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 10)
-        .attr("x", 0 - height / 2)
+        .attr("y", 0 - margin.left + 20)
+        .attr("x", 0 - height / 2 + 20)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Risk health factors consumption");
@@ -208,16 +253,22 @@ function init() {
       var tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
       // Functions to show / update / hide the tooltip
-      var showTooltip = function (d) {
+      var showTooltip = function (d, factor) {
         tooltip
           .style("opacity", 1)
           .html(
-            "Year: " +
+            " Year of data collection: " +
               d.year +
-              "<br>Obese: " +
+              "<br>Total population who were overweight of obese: " +
               d.obese +
-              "<br>Total: " +
-              d.total
+              // "<br>Total: " +
+              // d.total +
+              "<br>" +
+              "Total amount of " +
+              factor.charAt(0) +
+              factor.slice(1) +
+              " that did not meet health guideline: " +
+              d[factor]
           )
           .style("left", event.pageX + 10 + "px")
           .style("top", event.pageY - 28 + "px");
@@ -264,7 +315,9 @@ function init() {
           .style("fill", function (d) {
             return bubbleColor(factor);
           })
-          .on("mouseover", showTooltip)
+          .on("mouseover", function (d) {
+            showTooltip(d, factor);
+          })
           .on("mousemove", moveTooltip)
           .on("mouseleave", hideTooltip);
       });
@@ -486,7 +539,7 @@ function init() {
         .append("text")
         .attr("class", "health-factor-title")
         .attr("x", width / 2 - 55)
-        .attr("y", -height / 2 + 80)
+        .attr("y", -height / 2 + 90)
         .text("Factors");
 
       // Add legend rectangular bullet
