@@ -9,6 +9,7 @@ function init() {
 
   let selectedBarDatatSet = datasets.dataset5;
   let powerGauge;
+  let barColor;
 
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
@@ -149,7 +150,7 @@ function init() {
         .range([innerRadius, outerRadius]) // Domain will be define later.
         .domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
 
-      var barColor = d3
+      barColor = d3
         .scaleOrdinal()
         .domain(
           data.map(function (d) {
@@ -369,7 +370,15 @@ function init() {
   });
 
   powerGauge.render("#gauge");
+
+  // Update the gauge with the initial correlation value from the dataset
+  d3.csv(selectedBarDatatSet, function (data) {
+    const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
+    powerGauge.update(initialCorrelation);
+  });
 }
+
+// -------------------- Gauge chart starts here -------------------- //
 
 // Gauge class and its methods
 class Gauge {
@@ -380,8 +389,8 @@ class Gauge {
       minValue: -1,
       maxValue: 1,
       majorTicks: 5,
-      lowThreshhold: 3,
-      highThreshhold: 7,
+      lowThreshhold: -0.3,
+      highThreshhold: 0.7,
       scale: "linear",
       lowThreshholdColor: "#009900",
       defaultColor: "#ffe500",
@@ -547,25 +556,7 @@ class Gauge {
       .attr("d", d3.line())
       .attr("transform", `rotate(${this.minAngle})`);
 
-    const numberDiv = d3
-      .select(container)
-      .append("div")
-      .attr("class", "number-div")
-      .style("width", `${this.config.size - this.config.margin}px`);
-
-    const numberUnit = numberDiv
-      .append("span")
-      .attr("class", "number-unit")
-      .text((d) => this.config.displayUnit);
-
-    const numberValue = numberDiv
-      .append("span")
-      .data([newValue])
-      .attr("class", "number-value")
-      .text((d) => (d === undefined ? 0 : d));
-
     this.pointer = pointer;
-    this.numberValue = numberValue;
   }
 
   update(newValue) {
@@ -575,19 +566,6 @@ class Gauge {
       .transition()
       .duration(this.config.transitionMs)
       .attr("transform", `rotate(${newAngle})`);
-
-    this.numberValue
-      .data([newValue])
-      .transition()
-      .duration(this.config.transitionMs)
-      .style("color", this.colorScale(this.scale(newValue)))
-      .tween("", function (d) {
-        const interpolator = d3.interpolate(this.textContent, d);
-        const that = this;
-        return function (t) {
-          that.textContent = interpolator(t).toFixed(1);
-        };
-      });
   }
 }
 
@@ -613,5 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Expose the gauge to the global scope for updating later
   window.powerGauge = powerGauge;
 });
+
+// -------------------- Gauge chart ends here -------------------- //
 
 window.onload = init;
