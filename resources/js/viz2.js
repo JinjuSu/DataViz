@@ -7,6 +7,27 @@ function init() {
 
   var selectedBarDatatSet = dataset5;
 
+  var year;
+  switch (selectedBarDatatSet) {
+    case dataset1:
+      year = "2007 - 2008";
+      break;
+    case dataset2:
+      year = "2011 - 2012";
+      break;
+    case dataset3:
+      year = "2014 - 2015";
+      break;
+    case dataset4:
+      year = "2017 - 2018";
+      break;
+    case dataset5:
+      year = "2022";
+      break;
+    default:
+      year = "";
+  }
+
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
     width = 600 - margin.left - margin.right,
@@ -111,6 +132,9 @@ function init() {
       "translate(" + (width / 2 - 150) + "," + (height / 2 + margin.top) + ")"
     );
 
+  // Add the interactive legend
+  var size = 20;
+
   // Highlight functions for the legend
   var highlight = function (d) {
     // Reduce opacity of all groups
@@ -157,7 +181,11 @@ function init() {
 
     var barColor = d3
       .scaleOrdinal()
-      .domain(["alcohol", "fruit", "vegatable", "smoke", "physical"])
+      .domain(
+        data.map(function (d) {
+          return d.factor;
+        })
+      )
       .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
     // Add the bars
@@ -210,22 +238,19 @@ function init() {
         document.getElementById("selectedPercent").innerText = d.counts;
       });
 
-    // Add the interactive legend
-    var size = 20;
-    var allgroups = ["alcohol", "fruit", "vegatable", "smoke", "physical"];
-
-    var allgroups2 = [
-      "Excessive alcohol cunsumption",
-      "Low daily fruit consumption",
-      "Low daily vegetable consumption",
-      "Daily smoker",
-      "No physical activity",
-    ];
+    // Add the year label inside the inner radius
+    svgCirBar
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("font-size", "24px")
+      .attr("font-weight", "bold")
+      .attr("y", innerRadius / 10) // Position the text at the center of the inner radius
+      .text(year);
 
     // Add legend rectangular bullet
     svgCirBar
       .selectAll("myrect")
-      .data(allgroups)
+      .data(data)
       .enter()
       .append("rect")
       .attr("x", width / 2 - 70) // Adjust the position of the legend rectangles
@@ -234,41 +259,71 @@ function init() {
       })
       .attr("width", 14) // Width of the rectangles
       .attr("height", 14) // Height of the rectangles
-      .style("fill", function (d) {
-        return barColor(d);
+      .attr("class", function (d) {
+        return d.factor.replace(/ /g, "");
       })
-      .on("mouseover", highlight)
-      .on("mouseleave", noHighlight);
+      .style("fill", function (d) {
+        return barColor(d.factor);
+      })
+      .on("mouseover", function (d) {
+        highlight(d.factor);
+      })
+      .on("mouseleave", function (d) {
+        noHighlight(d.factor);
+      })
+      .on("click", function (d) {
+        console.log("data: ", d.counts);
+        document.getElementById("selectedCorr").innerText = d.correlation;
+        document.getElementById("selectedTranslation").innerText =
+          d.translation;
+        document.getElementById("selectedTotal").innerText = d.total;
+        document.getElementById("selectedObese").innerText = d.obese;
+        document.getElementById("selectedFactor").innerText = d.dashboardlabels;
+        document.getElementById("selectedPercent").innerText = d.counts;
+      });
 
     // Add legend label
     svgCirBar
       .selectAll("circularBarPlot-legend")
-      .data(allgroups2)
+      .data(data)
       .enter()
       .append("text")
-      .attr("class", function (d, i) {
-        return "circularBarPlot-legend " + allgroups[i].replace(/ /g, "");
+      .attr("class", function (d) {
+        return "circularBarPlot-legend " + d.factor.replace(/ /g, "");
       })
       .attr("x", width / 2 - 40)
       .attr("y", function (d, i) {
         return -height / 2 + 50 + i * (size + 10) + size / 2;
-      }) // Adjust the position of the legend labels
+      })
       .style("fill", function (d, i) {
-        return barColor(allgroups[i]);
+        return barColor(d.factor);
       })
       .text(function (d) {
-        return d;
+        // print the text
+        return d.dashboardlabels;
       })
       .attr("text-anchor", "left")
       .style("font-size", "20px")
       .style("alignment-baseline", "middle")
-      .on("mouseover", function (d, i) {
-        highlight(allgroups[i]);
+      .on("mouseover", function (d) {
+        highlight(d.factor);
       })
-      .on("mouseleave", function (d, i) {
-        noHighlight(allgroups[i]);
+      .on("mouseleave", function (d) {
+        noHighlight(d.factor);
+      })
+      .on("click", function (d) {
+        console.log("data: ", d.counts);
+        document.getElementById("selectedCorr").innerText = d.correlation;
+        document.getElementById("selectedTranslation").innerText =
+          d.translation;
+        document.getElementById("selectedTotal").innerText = d.total;
+        document.getElementById("selectedObese").innerText = d.obese;
+        document.getElementById("selectedFactor").innerText = d.dashboardlabels;
+        document.getElementById("selectedPercent").innerText = d.counts;
       });
   });
+
+  // ----------------- Circular bar plot ends here -----------------//
 }
 
 window.onload = init;
