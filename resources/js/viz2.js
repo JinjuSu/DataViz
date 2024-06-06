@@ -1,18 +1,16 @@
 function init() {
-  const dataset1 = "resources/dataset/viz4/AIHW/percent/2001.csv";
-  const dataset2 = "resources/dataset/viz4/AIHW/percent/2004-2005.csv";
-  const dataset3 = "resources/dataset/viz4/AIHW/percent/2007-2008.csv";
-  const dataset4 = "resources/dataset/viz4/AIHW/percent/2011-2012.csv";
-  const dataset5 = "resources/dataset/viz4/AIHW/percent/2014–2015.csv";
-  const dataset6 = "resources/dataset/viz4/AIHW/percent/2017–2018.csv";
-  const dataset7 = "resources/dataset/viz4/AIHW/percent/2022.csv";
+  const dataset1 = "resources/dataset/viz4/barplot/2007-2008.csv";
+  const dataset2 = "resources/dataset/viz4/barplot/2011-2012.csv";
+  const dataset3 = "resources/dataset/viz4/barplot/2014–2015.csv";
+  const dataset4 = "resources/dataset/viz4/barplot/2017–2018.csv";
+  const dataset5 = "resources/dataset/viz4/barplot/2022.csv";
+
+  var selectedBarDatatSet = dataset5;
 
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
     width = 600 - margin.left - margin.right,
     height = 420 - margin.top - margin.bottom;
-  // for circular bar plot
-  (innerRadius = 50), (outerRadius = Math.min(width, height) / 2);
 
   // Append the bubble plot svg to the div
   var svgBubble = d3
@@ -98,33 +96,48 @@ function init() {
   // ----------------- Circular bar plot starts here -----------------//
 
   // append the svg for circular bar plot
+  // for circular bar plot
+  var innerRadius = 60,
+    outerRadius = Math.min(width, height) / 1.9;
+
   var svgCirBar = d3
     .select("#circularBarPlot")
     .append("svg")
     .attr("width", width + margin.left + margin.right + 100)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("height", height - 50)
     .append("g")
     .attr(
       "transform",
-      "translate(" + (width / 2 - 100) + "," + (height / 2 + margin.top) + ")"
+      "translate(" + (width / 2 - 150) + "," + (height / 2 + margin.top) + ")"
     );
 
   // Highlight functions for the legend
   var highlight = function (d) {
     // Reduce opacity of all groups
     d3.selectAll(".bars").style("opacity", 0.3);
-    // Expect the one that is hovered
+    d3.selectAll(".circularBarPlot-legend").style("opacity", 0.3);
+
+    // Highlight the associated bar and label
     d3.selectAll("." + d.replace(/ /g, "")).style("opacity", 1);
+    d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
+      .style("font-weight", "bold")
+      .style("opacity", 1);
   };
 
   var noHighlight = function (d) {
     d3.selectAll(".bars").style("opacity", 1);
+    d3.selectAll(".circularBarPlot-legend").style("opacity", 1);
+
+    // Reset the corresponding legend rectangles and labels
+    d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
+      .style("font-weight", "normal")
+      .style("opacity", 1);
   };
 
-  d3.csv(dataset7, function (data) {
+  d3.csv(selectedBarDatatSet, function (data) {
     // Sort data by Value in descending order
     data.sort(function (a, b) {
-      return d3.descending(+a.Value, +b.Value);
+      return d3.descending(+a.percent, +b.percent);
     });
 
     // Scales
@@ -134,7 +147,7 @@ function init() {
       .align(0) // This does nothing
       .domain(
         data.map(function (d) {
-          return d.Category;
+          return d.factor;
         })
       ); // The domain of the X axis is the list of states.
     var y = d3
@@ -144,13 +157,7 @@ function init() {
 
     var barColor = d3
       .scaleOrdinal()
-      .domain([
-        "Alcohol",
-        "DailyFruitAndVegetables",
-        "Obese",
-        "Daily smoker",
-        "PhysicalActivity",
-      ])
+      .domain(["alcohol", "fruit", "vegatable", "smoke", "physical"])
       .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
     // Add the bars
@@ -161,10 +168,11 @@ function init() {
       .enter()
       .append("path")
       .attr("class", function (d) {
-        return "bars " + d.Category.replace(/ /g, "");
+        console.log("bars " + d.factor.replace(/ /g, ""));
+        return "bars " + d.factor.replace(/ /g, "");
       })
       .attr("fill", function (d) {
-        return barColor(d.Category);
+        return barColor(d.factor);
       })
       .attr(
         "d",
@@ -172,36 +180,57 @@ function init() {
           .arc()
           .innerRadius(innerRadius)
           .outerRadius(function (d) {
-            return y(d["Value"]);
+            return y(d["percent"]);
           })
           .startAngle(function (d) {
-            return x(d.Category);
+            return x(d.factor);
           })
           .endAngle(function (d) {
-            return x(d.Category) + x.bandwidth();
+            return x(d.factor) + x.bandwidth();
           })
-          .padAngle(0.01)
+          .padAngle(0.1)
           .padRadius(innerRadius)
-      );
+      )
+      .on("mouseover", function (d) {
+        console.log(d.factor);
+        highlight(d.factor);
+      })
+      .on("mouseleave", function (d) {
+        console.log(d.factor);
+        noHighlight(d.factor);
+      })
+      .on("click", function (d) {
+        console.log("data: ", d.counts);
+        document.getElementById("selectedCorr").innerText = d.correlation;
+        document.getElementById("selectedTranslation").innerText =
+          d.translation;
+        document.getElementById("selectedTotal").innerText = d.total;
+        document.getElementById("selectedObese").innerText = d.obese;
+        document.getElementById("selectedFactor").innerText = d.dashboardlabels;
+        document.getElementById("selectedPercent").innerText = d.counts;
+      });
 
     // Add the interactive legend
     var size = 20;
-    var allgroups = [
-      "Alcohol",
-      "DailyFruitAndVegetables",
-      "Obese",
+    var allgroups = ["alcohol", "fruit", "vegatable", "smoke", "physical"];
+
+    var allgroups2 = [
+      "Excessive alcohol cunsumption",
+      "Low daily fruit consumption",
+      "Low daily vegetable consumption",
       "Daily smoker",
-      "PhysicalActivity",
+      "No physical activity",
     ];
 
+    // Add legend rectangular bullet
     svgCirBar
       .selectAll("myrect")
       .data(allgroups)
       .enter()
       .append("rect")
-      .attr("x", width / 2 - 7) // Adjust the position of the legend rectangles
+      .attr("x", width / 2 - 70) // Adjust the position of the legend rectangles
       .attr("y", function (d, i) {
-        return -height / 2 + 50 + i * (size + 5);
+        return -height / 2 + 50 + i * (size + 10);
       })
       .attr("width", 14) // Width of the rectangles
       .attr("height", 14) // Height of the rectangles
@@ -211,17 +240,21 @@ function init() {
       .on("mouseover", highlight)
       .on("mouseleave", noHighlight);
 
+    // Add legend label
     svgCirBar
-      .selectAll("mylabels")
-      .data(allgroups)
+      .selectAll("circularBarPlot-legend")
+      .data(allgroups2)
       .enter()
       .append("text")
-      .attr("x", width / 2 + 20)
+      .attr("class", function (d, i) {
+        return "circularBarPlot-legend " + allgroups[i].replace(/ /g, "");
+      })
+      .attr("x", width / 2 - 40)
       .attr("y", function (d, i) {
-        return -height / 2 + 50 + i * (size + 5) + size / 2;
+        return -height / 2 + 50 + i * (size + 10) + size / 2;
       }) // Adjust the position of the legend labels
-      .style("fill", function (d) {
-        return barColor(d);
+      .style("fill", function (d, i) {
+        return barColor(allgroups[i]);
       })
       .text(function (d) {
         return d;
@@ -229,8 +262,12 @@ function init() {
       .attr("text-anchor", "left")
       .style("font-size", "20px")
       .style("alignment-baseline", "middle")
-      .on("mouseover", highlight)
-      .on("mouseleave", noHighlight);
+      .on("mouseover", function (d, i) {
+        highlight(allgroups[i]);
+      })
+      .on("mouseleave", function (d, i) {
+        noHighlight(allgroups[i]);
+      });
   });
 }
 

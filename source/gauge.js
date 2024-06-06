@@ -6,8 +6,8 @@ class Gauge {
     const config = {
       size: 200,
       margin: 10,
-      minValue: 0,
-      maxValue: 10,
+      minValue: -1,
+      maxValue: 1,
       majorTicks: 5,
       lowThreshhold: 3,
       highThreshhold: 7,
@@ -94,6 +94,7 @@ class Gauge {
       );
   }
 
+  // update new data every 2 seconds
   _radius() {
     return (this.config.size - this.config.margin) / 2;
   }
