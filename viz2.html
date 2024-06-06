@@ -114,30 +114,46 @@
 
             <div class="col">
               <div class="radio-tick">
-                <input type="radio" id="year2007-2008" name="yearSelection" />
-                <label for="year2011-2012"><p>2007 - 2008</p></label>
+                <input
+                  type="radio"
+                  id="year2007-2008"
+                  name="yearSelection"
+                  value="dataset1"
+                />
+                <label for="year2007-2008"><p>2007 - 2008</p></label>
               </div>
             </div>
             <div class="col">
               <div class="radio-tick">
-                <input type="radio" id="year2011-2012" name="yearSelection" />
+                <input
+                  type="radio"
+                  id="year2011-2012"
+                  name="yearSelection"
+                  value="dataset2"
+                />
                 <label for="year2011-2012"><p>2011 - 2012</p></label>
               </div>
             </div>
             <div class="col">
               <div class="radio-tick">
-                <input type="radio" id="year2014-2015" name="yearSelection" />
-                <label for="year2014-2015">
-                  <p>2014 - 2015</p>
-                </label>
+                <input
+                  type="radio"
+                  id="year2014-2015"
+                  name="yearSelection"
+                  value="dataset3"
+                />
+                <label for="year2014-2015"><p>2014 - 2015</p></label>
               </div>
             </div>
             <div class="col">
               <div class="radio-tick">
-                <input type="radio" id="year2017-2018" name="yearSelection" />
-                <label for="year2017-2018">
-                  <p>2017 - 2018</p>
-                </label>
+                <input
+                  type="radio"
+                  id="year2017-2018"
+                  name="yearSelection"
+                  value="dataset4"
+                />
+                <label for="year2017-2018"><p>2017 - 2018</p></label>
               </div>
             </div>
             <div class="col">
@@ -146,6 +162,7 @@
                   type="radio"
                   id="year2022"
                   name="yearSelection"
+                  value="dataset5"
                   checked
                 />
                 <label for="year2022"><p>2022</p></label>
@@ -215,14 +232,12 @@
         const radios = document.querySelectorAll(
           '.radio-tick input[type="radio"]'
         );
-
         radios.forEach((radio) => {
           radio.addEventListener("change", () => {
-            // Remove checked class from all
             radios.forEach((r) => r.parentNode.classList.remove("checked"));
-            // Add checked class to the checked radio
             if (radio.checked) {
               radio.parentNode.classList.add("checked");
+              updateDataset(radio.value);
             }
           });
         });
