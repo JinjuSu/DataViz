@@ -5,27 +5,27 @@ function init() {
   const dataset4 = "resources/dataset/viz4/barplot/2017–2018.csv";
   const dataset5 = "resources/dataset/viz4/barplot/2022.csv";
 
-  var selectedBarDatatSet = dataset5;
+  var selectedBarDatatSet = dataset1;
 
   var year;
   switch (selectedBarDatatSet) {
     case dataset1:
-      year = "2007 - 2008";
+      year = "2007 -\n2008";
       break;
     case dataset2:
-      year = "2011 - 2012";
+      year = "2011 -\n2012";
       break;
     case dataset3:
-      year = "2014 - 2015";
+      year = "2014 -\n2015";
       break;
     case dataset4:
-      year = "2017 - 2018";
+      year = "2017 -\n2018";
       break;
     case dataset5:
       year = "2022";
       break;
     default:
-      year = "";
+      year = "2022";
   }
 
   // set the dimensions and margins of the graph
@@ -239,13 +239,26 @@ function init() {
       });
 
     // Add the year label inside the inner radius
+    let yearParts = year.split("\n");
+    let dyAdjustment = yearParts.length > 1 ? "-0.3em" : "0.4em"; // Adjust based on the number of lines
+
     svgCirBar
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("font-size", "24px")
+      .style("font-size", "24px")
       .attr("font-weight", "bold")
-      .attr("y", innerRadius / 10) // Position the text at the center of the inner radius
-      .text(year);
+      .attr("y", 0)
+      .selectAll("tspan")
+      .data(yearParts)
+      .enter()
+      .append("tspan")
+      .attr("x", 0)
+      .attr("dy", function (d, i) {
+        return i === 0 ? dyAdjustment : "1.2em";
+      })
+      .text(function (d) {
+        return d;
+      });
 
     // Add legend rectangular bullet
     svgCirBar
