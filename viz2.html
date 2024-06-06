@@ -62,29 +62,33 @@
         <!-- Correlation Coefficient % -->
         <div class="col-sm-8 col-md-4 col-lg-2 correlation-text">
           <div class="correlation-card">
-            <p class="card-title fs-6">Highly Correlated</p>
-            <p class="correlation-body">80%</p>
+            <p class="card-title fs-6" id="selectedTranslation">
+              Moderate negative correlation
+            </p>
+            <p class="correlation-body" id="selectedCorr">-0.41</p>
           </div>
         </div>
         <!-- Total population -->
         <div class="col-sm-8 col-md-4 col-lg-2">
           <div class="bubble-card">
             <p class="card-title fs-6">Total population</p>
-            <p class="bubble-card-body">14,708</p>
+            <p class="bubble-card-body" id="selectedTotal">19,806.80</p>
           </div>
         </div>
         <!-- Overweight/Obese -->
         <div class="col-sm-8 col-md-4 col-lg-2">
           <div class="bubble-card">
             <p class="card-title fs-6">Overweight or Obese</p>
-            <p class="bubble-card-body">2,591</p>
+            <p class="bubble-card-body" id="selectedObese">12,963.30</p>
           </div>
         </div>
         <!-- Selected health factor -->
         <div class="col-sm-8 col-md-4 col-lg-2">
           <div class="bubble-card">
-            <p class="card-title fs-6">Excessive alcohol consumption</p>
-            <p class="bubble-card-body">12,963</p>
+            <p class="card-title fs-6" id="selectedFactor">
+              Low daily vegetable consumption
+            </p>
+            <p class="bubble-card-body" id="selectedPercent">18511.8</p>
           </div>
         </div>
       </div>
@@ -107,20 +111,7 @@
                 <i class="fa-solid fa-stop"></i>
               </p>
             </div>
-            <div class="col">
-              <div class="radio-tick">
-                <input type="radio" id="year2001" name="yearSelection" />
-                <label for="year2011-2012">
-                  <p>2001</p>
-                </label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="radio-tick">
-                <input type="radio" id="year2004-2005" name="yearSelection" />
-                <label for="year2011-2012"><p>2004 - 2005</p></label>
-              </div>
-            </div>
+
             <div class="col">
               <div class="radio-tick">
                 <input type="radio" id="year2007-2008" name="yearSelection" />
@@ -168,8 +159,11 @@
         <div class="col-sm-8 col-md-6">
           <div class="row">
             <!-- Circular Bar Plot -->
-            <div class="col">
+            <div class="col-6 col-sm-8">
               <div id="circularBarPlot"></div>
+            </div>
+            <div class="col-6 col-sm-8">
+              <div id="circularBarPlot-legend"></div>
             </div>
           </div>
           <!-- Descriptions -->

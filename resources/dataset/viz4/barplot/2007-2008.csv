@@ -1,0 +1,6 @@
+labels,dashboardlabels,factor,counts,percent,correlation,translation,total,obese
+Alcohol cunsumption exceeded lifetime risk guidelines(n),Excessive alcohol cunsumption,alcohol,"3,294.00",20.91,-0.94,Strong negative correlation,"15,751.00","6,882.90"
+Low daily fruit consumption,Low Daily fruit consumption,fruit,"7,648.10",48.56,0.49,Moderate positive correlation,"15,751.00","6,882.90"
+Daily consumption of vegetables did not meet recommendation,Low daily vegetable consumption,vegatable,"14,689.10",93.26,-0.41,Moderate negative correlation,"15,751.00","6,882.90"
+Daily smoker,Daily smoker,smoke,"2,980.30",18.92,-0.95,Strong negative correlation,"15,751.00","6,882.90"
+Zero minutes of physical activity (ah),No physical activity,physical,"3,151.40",20.01,-0.77,Strong negative correlation,"15,751.00","6,882.90"
