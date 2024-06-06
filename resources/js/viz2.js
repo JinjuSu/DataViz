@@ -8,10 +8,54 @@ function init() {
   };
 
   let selectedBarDatatSet = datasets.dataset5;
+  let powerGauge;
+  let barColor;
+
+  function getColorForCorrelation(correlation) {
+    if (correlation == 0) return "#FFFFFF";
+    if (correlation > 0 && correlation < 0.3) return "#FFE600";
+    if (correlation >= 0.3 && correlation < 0.7) return "#FFAA32";
+    if (correlation >= 0.7) return "#FF4949";
+    if (correlation < 0 && correlation > -0.3) return "#D9FF00";
+    if (correlation <= -0.3 && correlation > -0.7) return "#3FFF00";
+    if (correlation <= -0.7) return "#00D200";
+    return "#000000"; // Default color if none of the above conditions match
+  }
 
   function updateDataset(value) {
     selectedBarDatatSet = datasets[value];
     drawCircularBarPlot();
+    updateDashboardCards();
+  }
+
+  function updateDashboardCards() {
+    d3.csv(selectedBarDatatSet, function (data) {
+      const summaryData = data[0]; // Assuming the first entry is a summary
+      const correlationColor = getColorForCorrelation(summaryData.correlation);
+
+      document.getElementById("selectedCorr").innerText =
+        summaryData.correlation;
+      document.getElementById("selectedTranslation").innerText =
+        summaryData.translation;
+      document.getElementById("selectedTotal").innerText = summaryData.total;
+      document.getElementById("selectedObese").innerText = summaryData.obese;
+      document.getElementById("selectedFactor").innerText =
+        summaryData.dashboardlabels;
+      document.getElementById("selectedPercent").innerText = summaryData.counts;
+
+      // Set the text color based on the correlation value
+      document.getElementById("selectedTranslation").style.color =
+        correlationColor;
+      document.getElementById("selectedCorr").style.color = correlationColor;
+
+      // Set the text color of the selected health factor
+      const factorColor = barColor(summaryData.dashboardlabels);
+      document.getElementById("selectedFactor").style.color = factorColor;
+      document.getElementById("selectedPercent").style.color = factorColor;
+
+      // Update the gauge with the correlation value
+      powerGauge.update(summaryData.correlation);
+    });
   }
 
   function drawCircularBarPlot() {
@@ -39,19 +83,12 @@ function init() {
         year = "2022";
     }
 
-    // set the dimensions for a canvas
+    // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
       height = 420 - margin.top - margin.bottom;
 
-    // ----------------- Bubble plot starts here -----------------//
-
-    // ----------------- Bubble plot ends here -----------------//
-
-    // ----------------- Circular bar plot starts here -----------------//
-
     // append the svg for circular bar plot
-    // for circular bar plot
     var innerRadius = 60,
       outerRadius = Math.min(width, height) / 1.9;
 
@@ -113,7 +150,7 @@ function init() {
         .range([innerRadius, outerRadius]) // Domain will be define later.
         .domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
 
-      var barColor = d3
+      barColor = d3
         .scaleOrdinal()
         .domain(
           data.map(function (d) {
@@ -130,7 +167,6 @@ function init() {
         .enter()
         .append("path")
         .attr("class", function (d) {
-          console.log("bars " + d.factor.replace(/ /g, ""));
           return "bars " + d.factor.replace(/ /g, "");
         })
         .attr("fill", function (d) {
@@ -154,15 +190,15 @@ function init() {
             .padRadius(innerRadius)
         )
         .on("mouseover", function (d) {
-          console.log(d.factor);
           highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          console.log(d.factor);
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -171,6 +207,19 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+          document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
 
       // Add the year label inside the inner radius
@@ -220,7 +269,9 @@ function init() {
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -229,6 +280,19 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+          document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
 
       // Add legend label
@@ -248,7 +312,6 @@ function init() {
           return barColor(d.factor);
         })
         .text(function (d) {
-          // print the text
           return d.dashboardlabels;
         })
         .attr("text-anchor", "left")
@@ -261,7 +324,9 @@ function init() {
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -270,14 +335,263 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+          document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
     });
-    // ----------------- Circular bar plot ends here -----------------//
   }
+
   // Initialize the plot with the default dataset
   drawCircularBarPlot();
+  updateDashboardCards();
 
   // Expose updateDataset function to global scope for event listener
   window.updateDataset = updateDataset;
+
+  // Initialize the gauge
+  powerGauge = new Gauge({
+    minValue: -1,
+    maxValue: 1,
+    lowThreshhold: -0.3,
+    highThreshhold: 0.7,
+    scale: "linear",
+    displayUnit: "Correlation",
+  });
+
+  powerGauge.render("#gauge");
+
+  // Update the gauge with the initial correlation value from the dataset
+  d3.csv(selectedBarDatatSet, function (data) {
+    const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
+    powerGauge.update(initialCorrelation);
+  });
 }
+
+// -------------------- Gauge chart starts here -------------------- //
+
+// Gauge class and its methods
+class Gauge {
+  constructor(configuration) {
+    const config = {
+      size: 200,
+      margin: 10,
+      minValue: -1,
+      maxValue: 1,
+      majorTicks: 5,
+      lowThreshhold: -0.3,
+      highThreshhold: 0.7,
+      scale: "linear",
+      lowThreshholdColor: "#009900",
+      defaultColor: "#ffe500",
+      highThreshholdColor: "#cc0000",
+      transitionMs: 1000,
+      displayUnit: "Value",
+    };
+
+    this.arcPadding = 15;
+    this.arcWidth = 20;
+    this.labelInset = 10;
+
+    this.minAngle = -90;
+    this.maxAngle = 90;
+    this.angleRange = this.maxAngle - this.minAngle;
+
+    this.config = Object.assign(config, configuration);
+    this._config();
+  }
+
+  _config() {
+    const pointerWidth = 15;
+    const pointerTailLength = 5;
+    const pointerHeadLength = this._radius() - this.labelInset;
+    this.lineData = [
+      [pointerWidth / 2, 0],
+      [0, -pointerHeadLength],
+      [-(pointerWidth / 2), 0],
+      [0, pointerTailLength],
+      [pointerWidth / 2, 0],
+    ];
+
+    if (this.config.scale == "log") {
+      this.scale = d3
+        .scaleLog()
+        .range([0, 1])
+        .domain([this.config.minValue, this.config.maxValue]);
+    } else {
+      this.scale = d3
+        .scaleLinear()
+        .range([0, 1])
+        .domain([this.config.minValue, this.config.maxValue]);
+    }
+
+    const colorDomain = [
+      this.config.lowThreshhold,
+      this.config.highThreshhold,
+    ].map(this.scale);
+    const colorRange = [
+      this.config.lowThreshholdColor,
+      this.config.defaultColor,
+      this.config.highThreshholdColor,
+    ];
+    this.colorScale = d3.scaleThreshold().domain(colorDomain).range(colorRange);
+
+    let ticks = this.config.majorTicks;
+    if (this.config.scale === "log") {
+      ticks = Math.log10(this.config.maxValue / this.config.minValue);
+    }
+    this.ticks = this.scale.ticks(ticks);
+
+    this.threshholds = [
+      this.config.minValue,
+      this.config.lowThreshhold,
+      this.config.highThreshhold,
+      this.config.maxValue,
+    ].map((d) => this.scale(d));
+
+    this.arc = d3
+      .arc()
+      .innerRadius(this._radius() - this.arcWidth - this.arcPadding)
+      .outerRadius(this._radius() - this.arcPadding)
+      .startAngle((d, i) => {
+        const ratio = i > 0 ? this.threshholds[i - 1] : this.threshholds[0];
+        return this._deg2rad(this.minAngle + ratio * this.angleRange);
+      })
+      .endAngle((d, i) =>
+        this._deg2rad(this.minAngle + this.threshholds[i] * this.angleRange)
+      );
+  }
+
+  _radius() {
+    return (this.config.size - this.config.margin) / 2;
+  }
+
+  _deg2rad(deg) {
+    return (deg * Math.PI) / 180;
+  }
+
+  setConfig(configuration) {
+    this.config = Object.assign(this.config, configuration);
+    this._config();
+    return this;
+  }
+
+  render(container, newValue) {
+    d3.select(container).selectAll("svg").remove();
+    d3.select(container).selectAll("div").remove();
+
+    const svg = d3
+      .select(container)
+      .append("svg")
+      .attr("class", "gauge")
+      .attr("width", this.config.size + this.config.margin)
+      .attr("height", this.config.size / 2 + this.config.margin);
+
+    const arcs = svg
+      .append("g")
+      .attr("class", "arc")
+      .attr("transform", `translate(${this._radius()}, ${this._radius()})`);
+
+    arcs
+      .selectAll("path")
+      .data(this.threshholds)
+      .enter()
+      .append("path")
+      .attr("fill", (d) => this.colorScale(d - 0.001))
+      .attr("d", this.arc);
+
+    const lg = svg
+      .append("g")
+      .attr("class", "label")
+      .attr("transform", `translate(${this._radius()},${this._radius()})`);
+
+    lg.selectAll("text")
+      .data(this.ticks)
+      .enter()
+      .append("text")
+      .attr("transform", (d) => {
+        var newAngle = this.minAngle + this.scale(d) * this.angleRange;
+        return `rotate(${newAngle}) translate(0, ${
+          this.labelInset - this._radius()
+        })`;
+      })
+      .text(d3.format("1,.0f"));
+
+    lg.selectAll("line")
+      .data(this.ticks)
+      .enter()
+      .append("line")
+      .attr("class", "tickline")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", this.arcWidth + this.labelInset)
+      .attr("transform", (d) => {
+        const newAngle = this.minAngle + this.scale(d) * this.angleRange;
+        return `rotate(${newAngle}), translate(0, ${
+          this.arcWidth - this.labelInset - this._radius()
+        })`;
+      })
+      .style("stroke", "#666")
+      .style("stroke-width", "1px");
+
+    const pg = svg
+      .append("g")
+      .data([this.lineData])
+      .attr("class", "pointer")
+      .attr("transform", `translate(${this._radius()},${this._radius()})`);
+
+    const pointer = pg
+      .append("path")
+      .attr("d", d3.line())
+      .attr("transform", `rotate(${this.minAngle})`);
+
+    this.pointer = pointer;
+  }
+
+  update(newValue) {
+    const newAngle = this.minAngle + this.scale(newValue) * this.angleRange;
+
+    this.pointer
+      .transition()
+      .duration(this.config.transitionMs)
+      .attr("transform", `rotate(${newAngle})`);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize the gauge
+  const powerGauge = new Gauge({
+    minValue: -1,
+    maxValue: 1,
+    lowThreshhold: -0.3,
+    highThreshhold: 0.7,
+    scale: "linear",
+    displayUnit: "Correlation",
+  });
+
+  powerGauge.render("#gauge");
+
+  // Update the gauge with the initial correlation value from the dataset
+  d3.csv("resources/dataset/viz4/barplot/2022.csv", function (data) {
+    const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
+    powerGauge.update(initialCorrelation);
+  });
+
+  // Expose the gauge to the global scope for updating later
+  window.powerGauge = powerGauge;
+});
+
+// -------------------- Gauge chart ends here -------------------- //
+
 window.onload = init;

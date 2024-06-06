@@ -7,9 +7,13 @@
     <meta name="Author" content="Jinjuta Suksuwan Thursday 9:30 - 10:30AM" />
 
     <!-- Import cguage chart -->
-    <link rel="stylesheet" href="source/style.css" />
-    <script src="source/gauge.js"></script>
-    <script src="example.js"></script>
+    <link
+      rel="stylesheet"
+      href="resources/css/style.css
+    "
+    />
+    <!-- <script src="source/gauge.js"></script>
+    <script src="example.js"></script> -->
 
     <!-- Import custom charts -->
     <script src="resources/js/viz2.js"></script>
@@ -62,33 +66,34 @@
         <!-- Correlation Coefficient % -->
         <div class="col-sm-8 col-md-4 col-lg-2 correlation-text">
           <div class="correlation-card">
-            <p class="card-title fs-6" id="selectedTranslation">
+            <div class="bubble-card-title" id="selectedTranslation">
               Moderate negative correlation
-            </p>
-            <p class="correlation-body" id="selectedCorr">-0.41</p>
-          </div>
-        </div>
-        <!-- Total population -->
-        <div class="col-sm-8 col-md-4 col-lg-2">
-          <div class="bubble-card">
-            <p class="card-title fs-6">Total population</p>
-            <p class="bubble-card-body" id="selectedTotal">19,806.80</p>
-          </div>
-        </div>
-        <!-- Overweight/Obese -->
-        <div class="col-sm-8 col-md-4 col-lg-2">
-          <div class="bubble-card">
-            <p class="card-title fs-6">Overweight or Obese</p>
-            <p class="bubble-card-body" id="selectedObese">12,963.30</p>
+            </div>
+            <div class="correlation-body" id="selectedCorr">-0.41</div>
           </div>
         </div>
         <!-- Selected health factor -->
         <div class="col-sm-8 col-md-4 col-lg-2">
           <div class="bubble-card">
-            <p class="card-title fs-6" id="selectedFactor">
+            <div class="bubble-card-title" id="selectedFactor">
               Low daily vegetable consumption
-            </p>
-            <p class="bubble-card-body" id="selectedPercent">18511.8</p>
+            </div>
+            <div class="bubble-card-body" id="selectedPercent">18511.8</div>
+          </div>
+        </div>
+
+        <!-- Overweight/Obese -->
+        <div class="col-sm-8 col-md-4 col-lg-2">
+          <div class="bubble-card">
+            <div class="bubble-card-title">Overweight or Obese</div>
+            <div class="bubble-card-body" id="selectedObese">12,963.30</div>
+          </div>
+        </div>
+        <!-- Total population -->
+        <div class="col-sm-8 col-md-4 col-lg-2">
+          <div class="bubble-card">
+            <div class="bubble-card-title">Total population</div>
+            <div class="bubble-card-body" id="selectedTotal">19,806.80</div>
           </div>
         </div>
       </div>
@@ -117,7 +122,7 @@
                 <input
                   type="radio"
                   id="year2007-2008"
-                  name="yearSelection"
+                  name="yearPicker"
                   value="dataset1"
                 />
                 <label for="year2007-2008"><p>2007 - 2008</p></label>
@@ -128,7 +133,7 @@
                 <input
                   type="radio"
                   id="year2011-2012"
-                  name="yearSelection"
+                  name="yearPicker"
                   value="dataset2"
                 />
                 <label for="year2011-2012"><p>2011 - 2012</p></label>
@@ -139,7 +144,7 @@
                 <input
                   type="radio"
                   id="year2014-2015"
-                  name="yearSelection"
+                  name="yearPicker"
                   value="dataset3"
                 />
                 <label for="year2014-2015"><p>2014 - 2015</p></label>
@@ -150,7 +155,7 @@
                 <input
                   type="radio"
                   id="year2017-2018"
-                  name="yearSelection"
+                  name="yearPicker"
                   value="dataset4"
                 />
                 <label for="year2017-2018"><p>2017 - 2018</p></label>
@@ -161,7 +166,7 @@
                 <input
                   type="radio"
                   id="year2022"
-                  name="yearSelection"
+                  name="yearPicker"
                   value="dataset5"
                   checked
                 />

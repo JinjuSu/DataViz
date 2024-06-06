@@ -117,16 +117,23 @@ p {
 .bubble-card {
   color: #ffffff;
   background-color: #211c33;
-  height: 150px;
+  height: 160px;
   padding: 16px;
   position: relative;
   border-radius: 8px;
 }
 
+.bubble-card-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #a09dab;
+}
+
 .bubble-card-body {
   font-size: 40px;
+  font-weight: semi-bold;
   position: absolute;
-  bottom: 0;
+  bottom: 20px;
 }
 
 .bubble-card-box {
