@@ -7,9 +7,12 @@ function init() {
     dataset5: "resources/dataset/viz4/barplot/2022.csv",
   };
 
+  const bubbleData = "resources/dataset/viz4/bubble.csv";
+
   let selectedBarDatatSet = datasets.dataset5;
   let powerGauge;
   let barColor;
+  let selectedFactor = null;
 
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
@@ -24,21 +27,65 @@ function init() {
 
   function updateDataset(value) {
     selectedBarDatatSet = datasets[value];
+    clearBubblePlot();
     drawCircularBarPlot();
     updateDashboardCards();
   }
 
   function updateDashboardCards() {
+    console.log("updateDashboardCards is called");
+
     d3.csv(selectedBarDatatSet, function (data) {
-      const summaryData = data[0]; // Assuming the first entry is a summary
+      let yearDescription;
+      switch (selectedBarDatatSet) {
+        case datasets.dataset1:
+          yearDescription = "2007 - 2008";
+          break;
+        case datasets.dataset2:
+          yearDescription = "2011 - 2012";
+          break;
+        case datasets.dataset3:
+          yearDescription = "2014 - 2015";
+          break;
+        case datasets.dataset4:
+          yearDescription = "2017 -  2018";
+          break;
+        case datasets.dataset5:
+          yearDescription = "2022";
+          break;
+        default:
+          yearDescription = "2022";
+      }
+
+      const summaryData = data[0];
       const correlationColor = getColorForCorrelation(summaryData.correlation);
 
+      // Update the description text
+      document.getElementById("selectedTranslationDescription").innerText =
+        summaryData.translation;
+      document.getElementById("selectedFactorDescription").innerText =
+        summaryData.counts;
+      document.getElementById("selectedTotalDescription").innerText =
+        summaryData.total;
+      document.getElementById("selectedOverweightDescription").innerText =
+        summaryData.obese;
+      document.getElementById("selectedYearDescription").innerText =
+        yearDescription;
+      document.getElementById("selectedYearDescription2").innerText =
+        yearDescription;
+
+      // Update the dashboards
+      console.log(summaryData);
       document.getElementById("selectedCorr").innerText =
         summaryData.correlation;
       document.getElementById("selectedTranslation").innerText =
         summaryData.translation;
       document.getElementById("selectedTotal").innerText = summaryData.total;
-      document.getElementById("selectedObese").innerText = summaryData.obese;
+      document.getElementById("selectedOverweight").innerText =
+        summaryData.obese;
+      document.getElementById("selectedOverweight").innerText =
+        summaryData.obese;
+
       document.getElementById("selectedFactor").innerText =
         summaryData.dashboardlabels;
       document.getElementById("selectedPercent").innerText = summaryData.counts;
@@ -56,6 +103,10 @@ function init() {
       // Update the gauge with the correlation value
       powerGauge.update(summaryData.correlation);
     });
+  }
+
+  function clearBubblePlot() {
+    d3.select("#bubblePlot").select("svg").remove();
   }
 
   function drawCircularBarPlot() {
@@ -86,7 +137,233 @@ function init() {
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
-      height = 420 - margin.top - margin.bottom;
+      height = 420 - margin.top - margin.bottom,
+      padding = 60;
+
+    // -------------------- Bubble plot starts here -------------------- //
+
+    // Append the bubble plot svg to the div
+    var svgBubble = d3
+      .select("#bubblePlot")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Read the data for Bubble
+    d3.csv(bubbleData, function (data) {
+      // Convert numerical values from strings to numbers
+      data.forEach(function (d) {
+        d.alcohol = +d.alcohol.replace(",", "");
+        d.fruit = +d.fruit.replace(",", "");
+        d.vegatable = +d.vegatable.replace(",", ""); // corrected typo here
+        d.smoke = +d.smoke.replace(",", "");
+        d.physical = +d.physical.replace(",", "");
+        d.obese = +d.obese.replace(",", "");
+        d.total = +d.total.replace(",", "");
+      });
+
+      // Scale X axis (obese)
+      var x = d3
+        .scaleLinear()
+        .domain([
+          5000,
+          d3.max(data, function (d) {
+            return d.obese + 2000;
+          }),
+        ])
+        .range([padding, width]);
+
+      // Add x-axis
+      svgBubble
+        .append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (height - padding) + ")")
+        .call(d3.axisBottom(x));
+
+      // Add X axis label
+      svgBubble
+        .append("text")
+        .attr("class", "x-axis-label")
+        .attr(
+          "transform",
+          "translate(" +
+            (width / 2 - 50) +
+            " ," +
+            (height + margin.top - 10) +
+            ")"
+        )
+        .style("text-anchor", "middle")
+        .text("Overweight or Obese Population");
+
+      // Add Y axis (health factors)
+      var y = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function (d) {
+            return (
+              Math.max(d.alcohol, d.fruit, d.vegatable, d.smoke, d.physical) +
+              2000
+            );
+          }),
+        ])
+        .range([height - padding, 0]);
+
+      svgBubble
+        .append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(d3.axisLeft(y));
+
+      // Add Y axis label
+      svgBubble
+        .append("text")
+        .attr("class", "y-axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 20)
+        .attr("x", 0 - height / 2 + 20)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Risk health factors consumption");
+
+      // Add a scale for bubble size
+      var z = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function (d) {
+            return Math.max(
+              d.alcohol,
+              d.fruit,
+              d.vegatable,
+              d.smoke,
+              d.physical
+            );
+          }),
+        ])
+        .range([4, 24]);
+
+      // Add a scale for bubble color
+      var bubbleColor = d3
+        .scaleOrdinal()
+        .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
+        .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
+
+      // Create a tooltip div that is hidden by default:
+      var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
+      // Functions to show / update / hide the tooltip
+      var showTooltip = function (d, factor) {
+        tooltip
+          .style("opacity", 1)
+          .html(
+            " Year of data collection: " +
+              d.year +
+              "<br>Total population who were overweight of obese: " +
+              d.obese +
+              // "<br>Total: " +
+              // d.total +
+              "<br>" +
+              "Total amount of " +
+              factor.charAt(0) +
+              factor.slice(1) +
+              " that did not meet health guideline: " +
+              d[factor]
+          )
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
+      };
+
+      var moveTooltip = function (d) {
+        tooltip
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
+      };
+
+      var hideTooltip = function (d) {
+        tooltip.style("opacity", 0);
+      };
+
+      // Add dots for each health factor
+      var healthFactors = [
+        "alcohol",
+        "fruit",
+        "vegatable",
+        "smoke",
+        "physical",
+      ];
+
+      // Add dots for each health factor
+      healthFactors.forEach(function (factor) {
+        svgBubble
+          .selectAll("dot")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", function (d) {
+            return "bubbles bubble " + factor.replace(/ /g, "");
+          }) // Add class
+          .attr("cx", function (d) {
+            return x(d.obese);
+          })
+          .attr("cy", function (d) {
+            return y(d[factor]);
+          })
+          .attr("r", function (d) {
+            return z(d[factor]);
+          })
+          .style("fill", function (d) {
+            return bubbleColor(factor);
+          })
+          .on("mouseover", function (d) {
+            showTooltip(d, factor);
+          })
+          .on("mousemove", moveTooltip)
+          .on("mouseleave", hideTooltip);
+      });
+
+      // Add legend
+      var size = 20;
+      svgBubble
+        .selectAll("myrect")
+        .data(healthFactors)
+        .enter()
+        .append("rect")
+        .attr("x", 700)
+        .attr("y", function (d, i) {
+          return 10 + i * (size + 5);
+        }) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function (d) {
+          return bubbleColor(d);
+        });
+
+      // Add labels beside legend dots
+      svgBubble
+        .selectAll("mylabels")
+        .data(healthFactors)
+        .enter()
+        .append("text")
+        .attr("x", 700 + size * 1.2)
+        .attr("y", function (d, i) {
+          return 10 + i * (size + 5) + size / 2;
+        }) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function (d) {
+          return bubbleColor(d);
+        })
+        .text(function (d) {
+          return d;
+        })
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
+    });
+
+    // -------------------- Bubble plot ends here -------------------- //
+
+    // -------------------- Circular bar plot starts here -------------------- //
 
     // append the svg for circular bar plot
     var innerRadius = 60,
@@ -100,34 +377,110 @@ function init() {
       .append("g")
       .attr(
         "transform",
-        "translate(" + (width / 2 - 150) + "," + (height / 2 + margin.top) + ")"
+        "translate(" + (width / 2 - 160) + "," + (height / 2 + margin.top) + ")"
       );
 
     // Add the interactive legend
     var size = 20;
-
-    // Highlight functions for the legend
-    var highlight = function (d) {
+    var highlight = function (factor) {
       // Reduce opacity of all groups
       d3.selectAll(".bars").style("opacity", 0.3);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 0.3);
+      d3.selectAll(".bubbles").style("opacity", 0.3);
+      d3.selectAll(".myrect").style("opacity", 0.3);
 
-      // Highlight the associated bar and label
-      d3.selectAll("." + d.replace(/ /g, "")).style("opacity", 1);
-      d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
+      // Highlight the associated bar, legend, and bubble
+      d3.selectAll("." + factor.replace(/ /g, "")).style("opacity", 1);
+      d3.selectAll(".circularBarPlot-legend." + factor.replace(/ /g, ""))
         .style("font-weight", "bold")
         .style("opacity", 1);
+      d3.selectAll(".bubble." + factor.replace(/ /g, "")).style("opacity", 1);
+      d3.selectAll(".myrect." + factor.replace(/ /g, "")).style("opacity", 1);
     };
 
-    var noHighlight = function (d) {
+    var noHighlight = function () {
+      if (selectedFactor) return; // Do nothing if a factor is selected
       d3.selectAll(".bars").style("opacity", 1);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 1);
+      d3.selectAll(".bubbles").style("opacity", 1);
+      d3.selectAll(".myrect").style("opacity", 1);
 
       // Reset the corresponding legend rectangles and labels
-      d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
-        .style("font-weight", "normal")
-        .style("opacity", 1);
+      d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
     };
+
+    function handleClickDesciprtion(d) {
+      const factor = d.factor;
+      if (selectedFactor === factor) {
+        selectedFactor = null;
+        noHighlight();
+      } else {
+        selectedFactor = factor;
+        highlight(factor);
+
+        const correlationColor = getColorForCorrelation(d.correlation);
+        const factorColor = barColor(d.factor);
+        // Update the description text
+        document.getElementById("selectedTranslationDescription").innerText =
+          d.translation;
+        document.getElementById("selectedFactorDescription").innerText =
+          d.counts;
+        document.getElementById("selectedTotalDescription").innerText = d.total;
+        document.getElementById("selectedOverweightDescription").innerText =
+          document.obese;
+      }
+    }
+
+    function handleClick(d) {
+      const factor = d.factor;
+      if (selectedFactor === factor) {
+        selectedFactor = null;
+        noHighlight(factor);
+      } else {
+        selectedFactor = factor;
+        highlight(factor);
+
+        const correlationColor = getColorForCorrelation(d.correlation);
+        const factorColor = barColor(d.factor);
+
+        console.log("d.translation :", d.translation);
+        console.log("d.total :", d.total);
+        console.log("d.obese :", d.obese);
+        console.log("d.factor :", d.factor);
+        console.log("d.counts :", d.counts);
+
+        document.getElementById("selectedTranslationDescription").innerText =
+          d.translation;
+        document.getElementById("selectedFactorDescription").innerText =
+          d.counts;
+        document.getElementById("selectedTotalDescription").innerText = d.total;
+        document.getElementById("selectedOverweightDescription").innerText =
+          d.obese;
+
+        // Update the dashboard
+
+        document.getElementById("selectedCorr").innerText = d.correlation;
+        document.getElementById("selectedTranslation").innerText =
+          d.translation;
+        document.getElementById("selectedTotal").innerText = d.total;
+        document.getElementById("selectedOverweight").innerText = d.obese;
+
+        document.getElementById("selectedFactor").innerText = d.dashboardlabels;
+        document.getElementById("selectedPercent").innerText = d.counts;
+
+        // Set the text color based on the correlation value
+        document.getElementById("selectedTranslation").style.color =
+          correlationColor;
+        document.getElementById("selectedCorr").style.color = correlationColor;
+
+        // Set the text color of the selected health factor
+        document.getElementById("selectedFactor").style.color = factorColor;
+        document.getElementById("selectedPercent").style.color = factorColor;
+
+        // Update the gauge with the correlation value
+        powerGauge.update(d.correlation);
+      }
+    }
 
     d3.csv(selectedBarDatatSet, function (data) {
       // Sort data by Value in descending order
@@ -152,11 +505,7 @@ function init() {
 
       barColor = d3
         .scaleOrdinal()
-        .domain(
-          data.map(function (d) {
-            return d.factor;
-          })
-        )
+        .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
       // Add the bars
@@ -190,37 +539,13 @@ function init() {
             .padRadius(innerRadius)
         )
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
+          if (!selectedFactor) noHighlight(d.factor);
         })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
-        });
+        .on("click", handleClick);
+      // .on("click", handleClickDesciprtion);
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -244,15 +569,30 @@ function init() {
           return d;
         });
 
+      // Add the risk health factor title
+      svgCirBar
+        .append("text")
+        .attr("class", "health-factor-title")
+        .attr("x", width / 2 - 55)
+        .attr("y", -height / 2 + 40)
+        .text("Risk Health");
+
+      svgCirBar
+        .append("text")
+        .attr("class", "health-factor-title")
+        .attr("x", width / 2 - 55)
+        .attr("y", -height / 2 + 90)
+        .text("Factors");
+
       // Add legend rectangular bullet
       svgCirBar
         .selectAll("myrect")
         .data(data)
         .enter()
         .append("rect")
-        .attr("x", width / 2 - 70) // Adjust the position of the legend rectangles
+        .attr("x", width / 2 - 50) // Adjust the position of the legend rectangles
         .attr("y", function (d, i) {
-          return -height / 2 + 50 + i * (size + 10);
+          return -height / 2 + 150 + i * (size + 10);
         })
         .attr("width", 14) // Width of the rectangles
         .attr("height", 14) // Height of the rectangles
@@ -263,36 +603,10 @@ function init() {
           return barColor(d.factor);
         })
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
-        })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
+          if (!selectedFactor) noHighlight(d.factor);
         });
 
       // Add legend label
@@ -304,9 +618,9 @@ function init() {
         .attr("class", function (d) {
           return "circularBarPlot-legend " + d.factor.replace(/ /g, "");
         })
-        .attr("x", width / 2 - 40)
+        .attr("x", width / 2 - 20)
         .attr("y", function (d, i) {
-          return -height / 2 + 50 + i * (size + 10) + size / 2;
+          return -height / 2 + 150 + i * (size + 10) + size / 2;
         })
         .style("fill", function (d, i) {
           return barColor(d.factor);
@@ -318,37 +632,13 @@ function init() {
         .style("font-size", "20px")
         .style("alignment-baseline", "middle")
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
+          if (!selectedFactor) noHighlight(d.factor);
         })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
-        });
+        .on("click", handleClick);
+      // .on("click", handleClickDesciprtion);
     });
   }
 
@@ -358,6 +648,8 @@ function init() {
 
   // Expose updateDataset function to global scope for event listener
   window.updateDataset = updateDataset;
+
+  // -------------------- Circular bar plot ends here -------------------- //
 
   // Initialize the gauge
   powerGauge = new Gauge({
@@ -376,25 +668,30 @@ function init() {
     const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
     powerGauge.update(initialCorrelation);
   });
-}
 
-// -------------------- Gauge chart starts here -------------------- //
+  // Add a click event listener to the document
+  document.addEventListener("click", function (event) {
+    if (event.target.closest(".bars, .circularBarPlot-legend, .bubbles")) {
+      return;
+    }
+    selectedFactor = null;
+    noHighlight();
+  });
+}
 
 // Gauge class and its methods
 class Gauge {
   constructor(configuration) {
     const config = {
-      size: 200,
+      size: 320,
       margin: 10,
       minValue: -1,
       maxValue: 1,
-      majorTicks: 5,
+      majorTicks: 6,
       lowThreshhold: -0.3,
       highThreshhold: 0.7,
       scale: "linear",
-      lowThreshholdColor: "#009900",
-      defaultColor: "#ffe500",
-      highThreshholdColor: "#cc0000",
+
       transitionMs: 1000,
       displayUnit: "Value",
     };
@@ -434,17 +731,21 @@ class Gauge {
         .range([0, 1])
         .domain([this.config.minValue, this.config.maxValue]);
     }
-
-    const colorDomain = [
-      this.config.lowThreshhold,
-      this.config.highThreshhold,
-    ].map(this.scale);
+    // Define the new color thresholds and colors
+    const colorDomain = [-1, -0.7, -0.3, 0, 0.3, 0.7, 1].map(this.scale);
     const colorRange = [
-      this.config.lowThreshholdColor,
-      this.config.defaultColor,
-      this.config.highThreshholdColor,
+      "#00D200",
+      "#3FFF00",
+      "#D9FF00",
+      "#FFFFFF",
+      "#FFE600",
+      "#FFAA32",
+      "#FF4949",
     ];
     this.colorScale = d3.scaleThreshold().domain(colorDomain).range(colorRange);
+
+    // Set the ticks explicitly
+    // this.ticks = [-1, -0.5, 0, 0.5, 1];
 
     let ticks = this.config.majorTicks;
     if (this.config.scale === "log") {
@@ -525,7 +826,7 @@ class Gauge {
           this.labelInset - this._radius()
         })`;
       })
-      .text(d3.format("1,.0f"));
+      .text(d3.format(".1f"));
 
     lg.selectAll("line")
       .data(this.ticks)
