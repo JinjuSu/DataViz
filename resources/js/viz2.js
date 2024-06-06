@@ -135,7 +135,7 @@ function init() {
       // Add x-axis
       svgBubble
         .append("g")
-        .attr("class", "axis") // Add this line
+        .attr("class", "axis")
         .attr("transform", "translate(0," + (height - padding) + ")")
         .call(d3.axisBottom(x));
 
@@ -332,6 +332,7 @@ function init() {
       d3.selectAll(".bars").style("opacity", 0.3);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 0.3);
       d3.selectAll(".bubbles").style("opacity", 0.3);
+      d3.selectAll(".myrect").style("opacity", 0.3);
 
       // Highlight the associated bar, legend, and bubble
       d3.selectAll("." + factor.replace(/ /g, "")).style("opacity", 1);
@@ -339,6 +340,7 @@ function init() {
         .style("font-weight", "bold")
         .style("opacity", 1);
       d3.selectAll(".bubble." + factor.replace(/ /g, "")).style("opacity", 1);
+      d3.selectAll(".myrect." + factor.replace(/ /g, "")).style("opacity", 1);
     };
 
     var noHighlight = function () {
@@ -346,6 +348,7 @@ function init() {
       d3.selectAll(".bars").style("opacity", 1);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 1);
       d3.selectAll(".bubbles").style("opacity", 1);
+      d3.selectAll(".myrect").style("opacity", 1);
 
       // Reset the corresponding legend rectangles and labels
       d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
@@ -471,6 +474,21 @@ function init() {
           return d;
         });
 
+      // Add the risk health factor title
+      svgCirBar
+        .append("text")
+        .attr("class", "health-factor-title")
+        .attr("x", width / 2 - 55)
+        .attr("y", -height / 2 + 40)
+        .text("Risk Health");
+
+      svgCirBar
+        .append("text")
+        .attr("class", "health-factor-title")
+        .attr("x", width / 2 - 55)
+        .attr("y", -height / 2 + 80)
+        .text("Factors");
+
       // Add legend rectangular bullet
       svgCirBar
         .selectAll("myrect")
@@ -479,7 +497,7 @@ function init() {
         .append("rect")
         .attr("x", width / 2 - 50) // Adjust the position of the legend rectangles
         .attr("y", function (d, i) {
-          return -height / 2 + 50 + i * (size + 10);
+          return -height / 2 + 150 + i * (size + 10);
         })
         .attr("width", 14) // Width of the rectangles
         .attr("height", 14) // Height of the rectangles
@@ -494,8 +512,7 @@ function init() {
         })
         .on("mouseleave", function (d) {
           if (!selectedFactor) noHighlight();
-        })
-        .on("click", handleClick);
+        });
 
       // Add legend label
       svgCirBar
@@ -508,7 +525,7 @@ function init() {
         })
         .attr("x", width / 2 - 20)
         .attr("y", function (d, i) {
-          return -height / 2 + 50 + i * (size + 10) + size / 2;
+          return -height / 2 + 150 + i * (size + 10) + size / 2;
         })
         .style("fill", function (d, i) {
           return barColor(d.factor);

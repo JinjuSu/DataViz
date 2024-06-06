@@ -1,31 +1,8 @@
 .body {
-  color: #ffffff;
+  color: #ffffffba;
   background-color: #140f24;
   font-family: "inter", sans-serif;
   margin: 40px;
-}
-
-/* Typography
-h1 {
-  font-size: 64px;
-  font-weight: bold;
-}
-
-h2 #viz-title {
-  text-align: center; /* Centers the title text */
-/* }
-
-h2 {
-  font-size: 50px;
-  font-weight: bold;
-}
-
-h3 {
-  font-size: 36px;
-}
-
-p {
-  font-size: 18px;
 }
 
 /* Flex Container Setup */
@@ -75,24 +52,7 @@ p {
   text-align: right; /* Aligns content to the right */
 }
 
-/* Line Chart Style */
-.line {
-  fill: none;
-  stroke: red;
-  stroke-width: 5;
-  transition: stroke 0.2s ease;
-}
-
-.line:hover {
-  stroke: blue;
-}
-
-/* rect {
-  pointer-events: all;
-  fill-opacity: 0;
-  stroke-opacity: 0;
-  z-index: 1;
-} */
+/* ---------------- viz 2 starts here */
 
 .tooltip {
   background-color: rgba(12, 45, 73, 0.8);
@@ -115,7 +75,7 @@ p {
 }
 
 .bubble-card {
-  color: #ffffff;
+  color: #ffffffba;
   background-color: #211c33;
   height: 160px;
   padding: 16px;
@@ -196,7 +156,7 @@ p {
 }
 
 svg text {
-  fill: white;
+  fill: #ffffffba;
   font-size: 12px; /* Set appropriate font size if needed */
 }
 
@@ -206,12 +166,18 @@ svg text {
 }
 
 .axis text {
-  fill: white;
+  fill: #ffffffba;
 }
 
 .x-axis-label,
 .y-axis-label {
   fill: #a09dab5e;
   font-size: 22px;
+  font-weight: bold;
+}
+
+.health-factor-title {
+  fill: #a09dab5e;
+  font-size: 50px;
   font-weight: bold;
 }
