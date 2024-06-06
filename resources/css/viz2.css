@@ -145,6 +145,10 @@ p {
   min-height: 180px;
 }
 
+.correlation-card {
+  padding: 0px;
+  margin: 0px;
+}
 .correlation-body {
   font-size: 81px;
 
@@ -193,4 +197,20 @@ p {
 svg text {
   fill: white;
   font-size: 12px; /* Set appropriate font size if needed */
+}
+
+.axis path,
+.axis line {
+  stroke: white;
+}
+
+.axis text {
+  fill: white;
+}
+
+.x-axis-label,
+.y-axis-label {
+  fill: #a09dab5e;
+  font-size: 22px;
+  font-weight: bold;
 }

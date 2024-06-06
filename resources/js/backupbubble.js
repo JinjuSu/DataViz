@@ -1,4 +1,7 @@
 // Append the bubble plot svg to the div
+
+const bubbleData = "resources/dataset/viz4/bubble.csv";
+
 var svgBubble = d3
   .select("#bubblePlot")
   .append("svg")

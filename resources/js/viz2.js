@@ -7,6 +7,8 @@ function init() {
     dataset5: "resources/dataset/viz4/barplot/2022.csv",
   };
 
+  const bubbleData = "resources/dataset/viz4/bubble.csv";
+
   let selectedBarDatatSet = datasets.dataset5;
   let powerGauge;
   let barColor;
@@ -24,6 +26,7 @@ function init() {
 
   function updateDataset(value) {
     selectedBarDatatSet = datasets[value];
+    clearBubblePlot();
     drawCircularBarPlot();
     updateDashboardCards();
   }
@@ -58,6 +61,10 @@ function init() {
     });
   }
 
+  function clearBubblePlot() {
+    d3.select("#bubblePlot").select("svg").remove();
+  }
+
   function drawCircularBarPlot() {
     // Clear the previous plot
     d3.select("#circularBarPlot").select("svg").remove();
@@ -86,7 +93,218 @@ function init() {
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
-      height = 420 - margin.top - margin.bottom;
+      height = 420 - margin.top - margin.bottom,
+      padding = 60;
+
+    // -------------------- Bubble plot starts here -------------------- //
+
+    // Append the bubble plot svg to the div
+    var svgBubble = d3
+      .select("#bubblePlot")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Read the data for Bubble
+    d3.csv(bubbleData, function (data) {
+      // Convert numerical values from strings to numbers
+      data.forEach(function (d) {
+        d.alcohol = +d.alcohol.replace(",", "");
+        d.fruit = +d.fruit.replace(",", "");
+        d.vegetable = +d.vegatable.replace(",", ""); // corrected typo here
+        d.smoke = +d.smoke.replace(",", "");
+        d.physical = +d.physical.replace(",", "");
+        d.obese = +d.obese.replace(",", "");
+        d.total = +d.total.replace(",", "");
+      });
+
+      // Scale X axis (obese)
+      var x = d3
+        .scaleLinear()
+        .domain([
+          5000,
+          d3.max(data, function (d) {
+            return d.obese + 2000;
+          }),
+        ])
+        .range([padding, width]);
+
+      // Add x-axis
+      svgBubble
+        .append("g")
+        .attr("class", "axis") // Add this line
+        .attr("transform", "translate(0," + (height - padding) + ")")
+        .call(d3.axisBottom(x));
+
+      // Add X axis label
+      svgBubble
+        .append("text")
+        .attr("class", "x-axis-label")
+        .attr(
+          "transform",
+          "translate(" + width / 2 + " ," + (height + margin.top) + ")"
+        )
+        .style("text-anchor", "middle")
+        .text("Overweight or Obese Population");
+
+      // Add Y axis (health factors)
+      var y = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function (d) {
+            return (
+              Math.max(d.alcohol, d.fruit, d.vegetable, d.smoke, d.physical) +
+              2000
+            );
+          }),
+        ])
+        .range([height - padding, 0]);
+
+      svgBubble
+        .append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(d3.axisLeft(y));
+
+      // Add Y axis label
+      svgBubble
+        .append("text")
+        .attr("class", "y-axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 10)
+        .attr("x", 0 - height / 2)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Risk health factors consumption");
+
+      // Add a scale for bubble size
+      var z = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function (d) {
+            return Math.max(
+              d.alcohol,
+              d.fruit,
+              d.vegetable,
+              d.smoke,
+              d.physical
+            );
+          }),
+        ])
+        .range([4, 24]);
+
+      // Add a scale for bubble color
+      var bubbleColor = d3
+        .scaleOrdinal()
+        .domain(["alcohol", "fruit", "vegetable", "smoke", "physical"])
+        .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
+
+      // Create a tooltip div that is hidden by default:
+      var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
+      // Functions to show / update / hide the tooltip
+      var showTooltip = function (d) {
+        tooltip
+          .style("opacity", 1)
+          .html(
+            "Year: " +
+              d.year +
+              "<br>Obese: " +
+              d.obese +
+              "<br>Total: " +
+              d.total
+          )
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
+      };
+
+      var moveTooltip = function (d) {
+        tooltip
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
+      };
+
+      var hideTooltip = function (d) {
+        tooltip.style("opacity", 0);
+      };
+
+      // Add dots for each health factor
+      var healthFactors = [
+        "alcohol",
+        "fruit",
+        "vegetable",
+        "smoke",
+        "physical",
+      ];
+
+      healthFactors.forEach(function (factor) {
+        svgBubble
+          .selectAll("dot")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", "bubbles")
+          .attr("cx", function (d) {
+            return x(d.obese);
+          })
+          .attr("cy", function (d) {
+            return y(d[factor]);
+          })
+          .attr("r", function (d) {
+            return z(d[factor]);
+          })
+          .style("fill", function (d) {
+            return bubbleColor(factor);
+          })
+          .on("mouseover", showTooltip)
+          .on("mousemove", moveTooltip)
+          .on("mouseleave", hideTooltip);
+      });
+
+      // Add legend
+      var size = 20;
+      svgBubble
+        .selectAll("myrect")
+        .data(healthFactors)
+        .enter()
+        .append("rect")
+        .attr("x", 700)
+        .attr("y", function (d, i) {
+          return 10 + i * (size + 5);
+        }) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function (d) {
+          return bubbleColor(d);
+        });
+
+      // Add labels beside legend dots
+      svgBubble
+        .selectAll("mylabels")
+        .data(healthFactors)
+        .enter()
+        .append("text")
+        .attr("x", 700 + size * 1.2)
+        .attr("y", function (d, i) {
+          return 10 + i * (size + 5) + size / 2;
+        }) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function (d) {
+          return bubbleColor(d);
+        })
+        .text(function (d) {
+          return d;
+        })
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
+    });
+
+    // -------------------- Bubble plot ends here -------------------- //
+
+    // -------------------- Circular bar plot starts here -------------------- //
 
     // append the svg for circular bar plot
     var innerRadius = 60,
@@ -100,7 +318,7 @@ function init() {
       .append("g")
       .attr(
         "transform",
-        "translate(" + (width / 2 - 150) + "," + (height / 2 + margin.top) + ")"
+        "translate(" + (width / 2 - 160) + "," + (height / 2 + margin.top) + ")"
       );
 
     // Add the interactive legend
@@ -250,7 +468,7 @@ function init() {
         .data(data)
         .enter()
         .append("rect")
-        .attr("x", width / 2 - 70) // Adjust the position of the legend rectangles
+        .attr("x", width / 2 - 50) // Adjust the position of the legend rectangles
         .attr("y", function (d, i) {
           return -height / 2 + 50 + i * (size + 10);
         })
@@ -304,7 +522,7 @@ function init() {
         .attr("class", function (d) {
           return "circularBarPlot-legend " + d.factor.replace(/ /g, "");
         })
-        .attr("x", width / 2 - 40)
+        .attr("x", width / 2 - 20)
         .attr("y", function (d, i) {
           return -height / 2 + 50 + i * (size + 10) + size / 2;
         })
@@ -359,6 +577,8 @@ function init() {
   // Expose updateDataset function to global scope for event listener
   window.updateDataset = updateDataset;
 
+  // -------------------- Circular bar plot ends here -------------------- //
+
   // Initialize the gauge
   powerGauge = new Gauge({
     minValue: -1,
@@ -378,13 +598,11 @@ function init() {
   });
 }
 
-// -------------------- Gauge chart starts here -------------------- //
-
 // Gauge class and its methods
 class Gauge {
   constructor(configuration) {
     const config = {
-      size: 200,
+      size: 320,
       margin: 10,
       minValue: -1,
       maxValue: 1,
