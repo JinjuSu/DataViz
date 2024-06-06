@@ -8,6 +8,7 @@ function init() {
   };
 
   let selectedBarDatatSet = datasets.dataset5;
+  let powerGauge;
 
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
@@ -26,7 +27,7 @@ function init() {
     updateDashboardCards();
   }
 
-  function updateDashboardCards(factorColor) {
+  function updateDashboardCards() {
     d3.csv(selectedBarDatatSet, function (data) {
       const summaryData = data[0]; // Assuming the first entry is a summary
       const correlationColor = getColorForCorrelation(summaryData.correlation);
@@ -47,8 +48,12 @@ function init() {
       document.getElementById("selectedCorr").style.color = correlationColor;
 
       // Set the text color of the selected health factor
+      const factorColor = barColor(summaryData.dashboardlabels);
       document.getElementById("selectedFactor").style.color = factorColor;
       document.getElementById("selectedPercent").style.color = factorColor;
+
+      // Update the gauge with the correlation value
+      powerGauge.update(summaryData.correlation);
     });
   }
 
@@ -211,6 +216,9 @@ function init() {
           // Set the text color of the selected health factor
           document.getElementById("selectedFactor").style.color = factorColor;
           document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
 
       // Add the year label inside the inner radius
@@ -280,8 +288,10 @@ function init() {
 
           // Set the text color of the selected health factor
           document.getElementById("selectedFactor").style.color = factorColor;
-
           document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
 
       // Add legend label
@@ -333,8 +343,10 @@ function init() {
 
           // Set the text color of the selected health factor
           document.getElementById("selectedFactor").style.color = factorColor;
-
           document.getElementById("selectedPercent").style.color = factorColor;
+
+          // Update the gauge with the correlation value
+          powerGauge.update(d.correlation);
         });
     });
   }
@@ -345,5 +357,261 @@ function init() {
 
   // Expose updateDataset function to global scope for event listener
   window.updateDataset = updateDataset;
+
+  // Initialize the gauge
+  powerGauge = new Gauge({
+    minValue: -1,
+    maxValue: 1,
+    lowThreshhold: -0.3,
+    highThreshhold: 0.7,
+    scale: "linear",
+    displayUnit: "Correlation",
+  });
+
+  powerGauge.render("#gauge");
 }
+
+// Gauge class and its methods
+class Gauge {
+  constructor(configuration) {
+    const config = {
+      size: 200,
+      margin: 10,
+      minValue: -1,
+      maxValue: 1,
+      majorTicks: 5,
+      lowThreshhold: 3,
+      highThreshhold: 7,
+      scale: "linear",
+      lowThreshholdColor: "#009900",
+      defaultColor: "#ffe500",
+      highThreshholdColor: "#cc0000",
+      transitionMs: 1000,
+      displayUnit: "Value",
+    };
+
+    this.arcPadding = 15;
+    this.arcWidth = 20;
+    this.labelInset = 10;
+
+    this.minAngle = -90;
+    this.maxAngle = 90;
+    this.angleRange = this.maxAngle - this.minAngle;
+
+    this.config = Object.assign(config, configuration);
+    this._config();
+  }
+
+  _config() {
+    const pointerWidth = 15;
+    const pointerTailLength = 5;
+    const pointerHeadLength = this._radius() - this.labelInset;
+    this.lineData = [
+      [pointerWidth / 2, 0],
+      [0, -pointerHeadLength],
+      [-(pointerWidth / 2), 0],
+      [0, pointerTailLength],
+      [pointerWidth / 2, 0],
+    ];
+
+    if (this.config.scale == "log") {
+      this.scale = d3
+        .scaleLog()
+        .range([0, 1])
+        .domain([this.config.minValue, this.config.maxValue]);
+    } else {
+      this.scale = d3
+        .scaleLinear()
+        .range([0, 1])
+        .domain([this.config.minValue, this.config.maxValue]);
+    }
+
+    const colorDomain = [
+      this.config.lowThreshhold,
+      this.config.highThreshhold,
+    ].map(this.scale);
+    const colorRange = [
+      this.config.lowThreshholdColor,
+      this.config.defaultColor,
+      this.config.highThreshholdColor,
+    ];
+    this.colorScale = d3.scaleThreshold().domain(colorDomain).range(colorRange);
+
+    let ticks = this.config.majorTicks;
+    if (this.config.scale === "log") {
+      ticks = Math.log10(this.config.maxValue / this.config.minValue);
+    }
+    this.ticks = this.scale.ticks(ticks);
+
+    this.threshholds = [
+      this.config.minValue,
+      this.config.lowThreshhold,
+      this.config.highThreshhold,
+      this.config.maxValue,
+    ].map((d) => this.scale(d));
+
+    this.arc = d3
+      .arc()
+      .innerRadius(this._radius() - this.arcWidth - this.arcPadding)
+      .outerRadius(this._radius() - this.arcPadding)
+      .startAngle((d, i) => {
+        const ratio = i > 0 ? this.threshholds[i - 1] : this.threshholds[0];
+        return this._deg2rad(this.minAngle + ratio * this.angleRange);
+      })
+      .endAngle((d, i) =>
+        this._deg2rad(this.minAngle + this.threshholds[i] * this.angleRange)
+      );
+  }
+
+  _radius() {
+    return (this.config.size - this.config.margin) / 2;
+  }
+
+  _deg2rad(deg) {
+    return (deg * Math.PI) / 180;
+  }
+
+  setConfig(configuration) {
+    this.config = Object.assign(this.config, configuration);
+    this._config();
+    return this;
+  }
+
+  render(container, newValue) {
+    d3.select(container).selectAll("svg").remove();
+    d3.select(container).selectAll("div").remove();
+
+    const svg = d3
+      .select(container)
+      .append("svg")
+      .attr("class", "gauge")
+      .attr("width", this.config.size + this.config.margin)
+      .attr("height", this.config.size / 2 + this.config.margin);
+
+    const arcs = svg
+      .append("g")
+      .attr("class", "arc")
+      .attr("transform", `translate(${this._radius()}, ${this._radius()})`);
+
+    arcs
+      .selectAll("path")
+      .data(this.threshholds)
+      .enter()
+      .append("path")
+      .attr("fill", (d) => this.colorScale(d - 0.001))
+      .attr("d", this.arc);
+
+    const lg = svg
+      .append("g")
+      .attr("class", "label")
+      .attr("transform", `translate(${this._radius()},${this._radius()})`);
+
+    lg.selectAll("text")
+      .data(this.ticks)
+      .enter()
+      .append("text")
+      .attr("transform", (d) => {
+        var newAngle = this.minAngle + this.scale(d) * this.angleRange;
+        return `rotate(${newAngle}) translate(0, ${
+          this.labelInset - this._radius()
+        })`;
+      })
+      .text(d3.format("1,.0f"));
+
+    lg.selectAll("line")
+      .data(this.ticks)
+      .enter()
+      .append("line")
+      .attr("class", "tickline")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", this.arcWidth + this.labelInset)
+      .attr("transform", (d) => {
+        const newAngle = this.minAngle + this.scale(d) * this.angleRange;
+        return `rotate(${newAngle}), translate(0, ${
+          this.arcWidth - this.labelInset - this._radius()
+        })`;
+      })
+      .style("stroke", "#666")
+      .style("stroke-width", "1px");
+
+    const pg = svg
+      .append("g")
+      .data([this.lineData])
+      .attr("class", "pointer")
+      .attr("transform", `translate(${this._radius()},${this._radius()})`);
+
+    const pointer = pg
+      .append("path")
+      .attr("d", d3.line())
+      .attr("transform", `rotate(${this.minAngle})`);
+
+    const numberDiv = d3
+      .select(container)
+      .append("div")
+      .attr("class", "number-div")
+      .style("width", `${this.config.size - this.config.margin}px`);
+
+    const numberUnit = numberDiv
+      .append("span")
+      .attr("class", "number-unit")
+      .text((d) => this.config.displayUnit);
+
+    const numberValue = numberDiv
+      .append("span")
+      .data([newValue])
+      .attr("class", "number-value")
+      .text((d) => (d === undefined ? 0 : d));
+
+    this.pointer = pointer;
+    this.numberValue = numberValue;
+  }
+
+  update(newValue) {
+    const newAngle = this.minAngle + this.scale(newValue) * this.angleRange;
+
+    this.pointer
+      .transition()
+      .duration(this.config.transitionMs)
+      .attr("transform", `rotate(${newAngle})`);
+
+    this.numberValue
+      .data([newValue])
+      .transition()
+      .duration(this.config.transitionMs)
+      .style("color", this.colorScale(this.scale(newValue)))
+      .tween("", function (d) {
+        const interpolator = d3.interpolate(this.textContent, d);
+        const that = this;
+        return function (t) {
+          that.textContent = interpolator(t).toFixed(1);
+        };
+      });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize the gauge
+  const powerGauge = new Gauge({
+    minValue: -1,
+    maxValue: 1,
+    lowThreshhold: -0.3,
+    highThreshhold: 0.7,
+    scale: "linear",
+    displayUnit: "Correlation",
+  });
+
+  powerGauge.render("#gauge");
+
+  // Update the gauge with the initial correlation value from the dataset
+  d3.csv("resources/dataset/viz4/barplot/2022.csv", function (data) {
+    const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
+    powerGauge.update(initialCorrelation);
+  });
+
+  // Expose the gauge to the global scope for updating later
+  window.powerGauge = powerGauge;
+});
+
 window.onload = init;
