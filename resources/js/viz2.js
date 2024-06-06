@@ -9,9 +9,47 @@ function init() {
 
   let selectedBarDatatSet = datasets.dataset5;
 
+  function getColorForCorrelation(correlation) {
+    if (correlation == 0) return "#FFFFFF";
+    if (correlation > 0 && correlation < 0.3) return "#FFE600";
+    if (correlation >= 0.3 && correlation < 0.7) return "#FFAA32";
+    if (correlation >= 0.7) return "#FF4949";
+    if (correlation < 0 && correlation > -0.3) return "#D9FF00";
+    if (correlation <= -0.3 && correlation > -0.7) return "#3FFF00";
+    if (correlation <= -0.7) return "#00D200";
+    return "#000000"; // Default color if none of the above conditions match
+  }
+
   function updateDataset(value) {
     selectedBarDatatSet = datasets[value];
     drawCircularBarPlot();
+    updateDashboardCards();
+  }
+
+  function updateDashboardCards(factorColor) {
+    d3.csv(selectedBarDatatSet, function (data) {
+      const summaryData = data[0]; // Assuming the first entry is a summary
+      const correlationColor = getColorForCorrelation(summaryData.correlation);
+
+      document.getElementById("selectedCorr").innerText =
+        summaryData.correlation;
+      document.getElementById("selectedTranslation").innerText =
+        summaryData.translation;
+      document.getElementById("selectedTotal").innerText = summaryData.total;
+      document.getElementById("selectedObese").innerText = summaryData.obese;
+      document.getElementById("selectedFactor").innerText =
+        summaryData.dashboardlabels;
+      document.getElementById("selectedPercent").innerText = summaryData.counts;
+
+      // Set the text color based on the correlation value
+      document.getElementById("selectedTranslation").style.color =
+        correlationColor;
+      document.getElementById("selectedCorr").style.color = correlationColor;
+
+      // Set the text color of the selected health factor
+      document.getElementById("selectedFactor").style.color = factorColor;
+      document.getElementById("selectedPercent").style.color = factorColor;
+    });
   }
 
   function drawCircularBarPlot() {
@@ -39,19 +77,12 @@ function init() {
         year = "2022";
     }
 
-    // set the dimensions for a canvas
+    // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
       height = 420 - margin.top - margin.bottom;
 
-    // ----------------- Bubble plot starts here -----------------//
-
-    // ----------------- Bubble plot ends here -----------------//
-
-    // ----------------- Circular bar plot starts here -----------------//
-
     // append the svg for circular bar plot
-    // for circular bar plot
     var innerRadius = 60,
       outerRadius = Math.min(width, height) / 1.9;
 
@@ -130,7 +161,6 @@ function init() {
         .enter()
         .append("path")
         .attr("class", function (d) {
-          console.log("bars " + d.factor.replace(/ /g, ""));
           return "bars " + d.factor.replace(/ /g, "");
         })
         .attr("fill", function (d) {
@@ -154,15 +184,15 @@ function init() {
             .padRadius(innerRadius)
         )
         .on("mouseover", function (d) {
-          console.log(d.factor);
           highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          console.log(d.factor);
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -171,6 +201,16 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+          document.getElementById("selectedPercent").style.color = factorColor;
         });
 
       // Add the year label inside the inner radius
@@ -220,7 +260,9 @@ function init() {
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -229,6 +271,17 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+
+          document.getElementById("selectedPercent").style.color = factorColor;
         });
 
       // Add legend label
@@ -248,7 +301,6 @@ function init() {
           return barColor(d.factor);
         })
         .text(function (d) {
-          // print the text
           return d.dashboardlabels;
         })
         .attr("text-anchor", "left")
@@ -261,7 +313,9 @@ function init() {
           noHighlight(d.factor);
         })
         .on("click", function (d) {
-          console.log("data: ", d.counts);
+          const correlationColor = getColorForCorrelation(d.correlation);
+          const factorColor = barColor(d.factor);
+
           document.getElementById("selectedCorr").innerText = d.correlation;
           document.getElementById("selectedTranslation").innerText =
             d.translation;
@@ -270,12 +324,24 @@ function init() {
           document.getElementById("selectedFactor").innerText =
             d.dashboardlabels;
           document.getElementById("selectedPercent").innerText = d.counts;
+
+          // Set the text color based on the correlation value
+          document.getElementById("selectedTranslation").style.color =
+            correlationColor;
+          document.getElementById("selectedCorr").style.color =
+            correlationColor;
+
+          // Set the text color of the selected health factor
+          document.getElementById("selectedFactor").style.color = factorColor;
+
+          document.getElementById("selectedPercent").style.color = factorColor;
         });
     });
-    // ----------------- Circular bar plot ends here -----------------//
   }
+
   // Initialize the plot with the default dataset
   drawCircularBarPlot();
+  updateDashboardCards();
 
   // Expose updateDataset function to global scope for event listener
   window.updateDataset = updateDataset;
