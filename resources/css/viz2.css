@@ -106,7 +106,7 @@ p {
 .bubbles {
   stroke-width: 1px;
   stroke: white;
-  opacity: 0.7;
+  opacity: 1;
 }
 .bubbles:hover {
   stroke-width: 2px;
@@ -171,13 +171,14 @@ p {
   height: 100%;
   -webkit-appearance: none;
   appearance: none;
-  background-color: #5721f0;
+  background-color: #211c33;
   border-radius: 10px;
   cursor: pointer;
 }
 
 .radio-tick input:checked {
-  background-color: #d32a90;
+  /* background-color: #d32a90; */
+  background-color: #5721f0;
 }
 
 .radio-tick p {

@@ -12,6 +12,7 @@ function init() {
   let selectedBarDatatSet = datasets.dataset5;
   let powerGauge;
   let barColor;
+  let selectedFactor = null;
 
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
@@ -113,7 +114,7 @@ function init() {
       data.forEach(function (d) {
         d.alcohol = +d.alcohol.replace(",", "");
         d.fruit = +d.fruit.replace(",", "");
-        d.vegetable = +d.vegatable.replace(",", ""); // corrected typo here
+        d.vegatable = +d.vegatable.replace(",", ""); // corrected typo here
         d.smoke = +d.smoke.replace(",", "");
         d.physical = +d.physical.replace(",", "");
         d.obese = +d.obese.replace(",", "");
@@ -156,7 +157,7 @@ function init() {
           0,
           d3.max(data, function (d) {
             return (
-              Math.max(d.alcohol, d.fruit, d.vegetable, d.smoke, d.physical) +
+              Math.max(d.alcohol, d.fruit, d.vegatable, d.smoke, d.physical) +
               2000
             );
           }),
@@ -189,7 +190,7 @@ function init() {
             return Math.max(
               d.alcohol,
               d.fruit,
-              d.vegetable,
+              d.vegatable,
               d.smoke,
               d.physical
             );
@@ -200,7 +201,7 @@ function init() {
       // Add a scale for bubble color
       var bubbleColor = d3
         .scaleOrdinal()
-        .domain(["alcohol", "fruit", "vegetable", "smoke", "physical"])
+        .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
       // Create a tooltip div that is hidden by default:
@@ -236,18 +237,21 @@ function init() {
       var healthFactors = [
         "alcohol",
         "fruit",
-        "vegetable",
+        "vegatable",
         "smoke",
         "physical",
       ];
 
+      // Add dots for each health factor
       healthFactors.forEach(function (factor) {
         svgBubble
           .selectAll("dot")
           .data(data)
           .enter()
           .append("circle")
-          .attr("class", "bubbles")
+          .attr("class", function (d) {
+            return "bubbles bubble " + factor.replace(/ /g, "");
+          }) // Add class
           .attr("cx", function (d) {
             return x(d.obese);
           })
@@ -323,29 +327,63 @@ function init() {
 
     // Add the interactive legend
     var size = 20;
-
-    // Highlight functions for the legend
-    var highlight = function (d) {
+    var highlight = function (factor) {
       // Reduce opacity of all groups
       d3.selectAll(".bars").style("opacity", 0.3);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 0.3);
+      d3.selectAll(".bubbles").style("opacity", 0.3);
 
-      // Highlight the associated bar and label
-      d3.selectAll("." + d.replace(/ /g, "")).style("opacity", 1);
-      d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
+      // Highlight the associated bar, legend, and bubble
+      d3.selectAll("." + factor.replace(/ /g, "")).style("opacity", 1);
+      d3.selectAll(".circularBarPlot-legend." + factor.replace(/ /g, ""))
         .style("font-weight", "bold")
         .style("opacity", 1);
+      d3.selectAll(".bubble." + factor.replace(/ /g, "")).style("opacity", 1);
     };
 
-    var noHighlight = function (d) {
+    var noHighlight = function () {
+      if (selectedFactor) return; // Do nothing if a factor is selected
       d3.selectAll(".bars").style("opacity", 1);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 1);
+      d3.selectAll(".bubbles").style("opacity", 1);
 
       // Reset the corresponding legend rectangles and labels
-      d3.selectAll(".circularBarPlot-legend." + d.replace(/ /g, ""))
-        .style("font-weight", "normal")
-        .style("opacity", 1);
+      d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
     };
+
+    function handleClick(d) {
+      const factor = d.factor;
+      if (selectedFactor === factor) {
+        selectedFactor = null;
+        noHighlight();
+      } else {
+        selectedFactor = factor;
+        highlight(factor);
+
+        const correlationColor = getColorForCorrelation(d.correlation);
+        const factorColor = barColor(d.factor);
+
+        document.getElementById("selectedCorr").innerText = d.correlation;
+        document.getElementById("selectedTranslation").innerText =
+          d.translation;
+        document.getElementById("selectedTotal").innerText = d.total;
+        document.getElementById("selectedObese").innerText = d.obese;
+        document.getElementById("selectedFactor").innerText = d.dashboardlabels;
+        document.getElementById("selectedPercent").innerText = d.counts;
+
+        // Set the text color based on the correlation value
+        document.getElementById("selectedTranslation").style.color =
+          correlationColor;
+        document.getElementById("selectedCorr").style.color = correlationColor;
+
+        // Set the text color of the selected health factor
+        document.getElementById("selectedFactor").style.color = factorColor;
+        document.getElementById("selectedPercent").style.color = factorColor;
+
+        // Update the gauge with the correlation value
+        powerGauge.update(d.correlation);
+      }
+    }
 
     d3.csv(selectedBarDatatSet, function (data) {
       // Sort data by Value in descending order
@@ -370,11 +408,7 @@ function init() {
 
       barColor = d3
         .scaleOrdinal()
-        .domain(
-          data.map(function (d) {
-            return d.factor;
-          })
-        )
+        .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
       // Add the bars
@@ -408,37 +442,12 @@ function init() {
             .padRadius(innerRadius)
         )
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
+          if (!selectedFactor) noHighlight();
         })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
-        });
+        .on("click", handleClick);
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -481,37 +490,12 @@ function init() {
           return barColor(d.factor);
         })
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
+          if (!selectedFactor) noHighlight();
         })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
-        });
+        .on("click", handleClick);
 
       // Add legend label
       svgCirBar
@@ -536,37 +520,12 @@ function init() {
         .style("font-size", "20px")
         .style("alignment-baseline", "middle")
         .on("mouseover", function (d) {
-          highlight(d.factor);
+          if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          noHighlight(d.factor);
+          if (!selectedFactor) noHighlight();
         })
-        .on("click", function (d) {
-          const correlationColor = getColorForCorrelation(d.correlation);
-          const factorColor = barColor(d.factor);
-
-          document.getElementById("selectedCorr").innerText = d.correlation;
-          document.getElementById("selectedTranslation").innerText =
-            d.translation;
-          document.getElementById("selectedTotal").innerText = d.total;
-          document.getElementById("selectedObese").innerText = d.obese;
-          document.getElementById("selectedFactor").innerText =
-            d.dashboardlabels;
-          document.getElementById("selectedPercent").innerText = d.counts;
-
-          // Set the text color based on the correlation value
-          document.getElementById("selectedTranslation").style.color =
-            correlationColor;
-          document.getElementById("selectedCorr").style.color =
-            correlationColor;
-
-          // Set the text color of the selected health factor
-          document.getElementById("selectedFactor").style.color = factorColor;
-          document.getElementById("selectedPercent").style.color = factorColor;
-
-          // Update the gauge with the correlation value
-          powerGauge.update(d.correlation);
-        });
+        .on("click", handleClick);
     });
   }
 
@@ -595,6 +554,15 @@ function init() {
   d3.csv(selectedBarDatatSet, function (data) {
     const initialCorrelation = data[0].correlation; // Assuming the first entry is a summary
     powerGauge.update(initialCorrelation);
+  });
+
+  // Add a click event listener to the document
+  document.addEventListener("click", function (event) {
+    if (event.target.closest(".bars, .circularBarPlot-legend, .bubbles")) {
+      return;
+    }
+    selectedFactor = null;
+    noHighlight();
   });
 }
 
