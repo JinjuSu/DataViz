@@ -14,27 +14,6 @@ function init() {
   let barColor;
   let selectedFactor = null;
 
-  let yearDescription;
-  switch (selectedBarDatatSet) {
-    case datasets.dataset1:
-      year = "2007 - 2008";
-      break;
-    case datasets.dataset2:
-      year = "2011 - 2012";
-      break;
-    case datasets.dataset3:
-      year = "2014 - 2015";
-      break;
-    case datasets.dataset4:
-      year = "2017 -  2018";
-      break;
-    case datasets.dataset5:
-      year = "2022";
-      break;
-    default:
-      year = "2022";
-  }
-
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
     if (correlation > 0 && correlation < 0.3) return "#FFE600";
@@ -57,6 +36,27 @@ function init() {
     console.log("updateDashboardCards is called");
 
     d3.csv(selectedBarDatatSet, function (data) {
+      let yearDescription;
+      switch (selectedBarDatatSet) {
+        case datasets.dataset1:
+          yearDescription = "2007 - 2008";
+          break;
+        case datasets.dataset2:
+          yearDescription = "2011 - 2012";
+          break;
+        case datasets.dataset3:
+          yearDescription = "2014 - 2015";
+          break;
+        case datasets.dataset4:
+          yearDescription = "2017 -  2018";
+          break;
+        case datasets.dataset5:
+          yearDescription = "2022";
+          break;
+        default:
+          yearDescription = "2022";
+      }
+
       const summaryData = data[0];
       const correlationColor = getColorForCorrelation(summaryData.correlation);
 
@@ -70,6 +70,8 @@ function init() {
       document.getElementById("selectedOverweightDescription").innerText =
         summaryData.obese;
       document.getElementById("selectedYearDescription").innerText =
+        yearDescription;
+      document.getElementById("selectedYearDescription2").innerText =
         yearDescription;
 
       // Update the dashboards
@@ -407,7 +409,7 @@ function init() {
       d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
     };
 
-    function handleClick(d) {
+    function handleClickDesciprtion(d) {
       const factor = d.factor;
       if (selectedFactor === factor) {
         selectedFactor = null;
@@ -418,12 +420,51 @@ function init() {
 
         const correlationColor = getColorForCorrelation(d.correlation);
         const factorColor = barColor(d.factor);
+        // Update the description text
+        document.getElementById("selectedTranslationDescription").innerText =
+          d.translation;
+        document.getElementById("selectedFactorDescription").innerText =
+          d.counts;
+        document.getElementById("selectedTotalDescription").innerText = d.total;
+        document.getElementById("selectedOverweightDescription").innerText =
+          document.obese;
+      }
+    }
+
+    function handleClick(d) {
+      const factor = d.factor;
+      if (selectedFactor === factor) {
+        selectedFactor = null;
+        noHighlight(factor);
+      } else {
+        selectedFactor = factor;
+        highlight(factor);
+
+        const correlationColor = getColorForCorrelation(d.correlation);
+        const factorColor = barColor(d.factor);
+
+        console.log("d.translation :", d.translation);
+        console.log("d.total :", d.total);
+        console.log("d.obese :", d.obese);
+        console.log("d.factor :", d.factor);
+        console.log("d.counts :", d.counts);
+
+        document.getElementById("selectedTranslationDescription").innerText =
+          d.translation;
+        document.getElementById("selectedFactorDescription").innerText =
+          d.counts;
+        document.getElementById("selectedTotalDescription").innerText = d.total;
+        document.getElementById("selectedOverweightDescription").innerText =
+          d.obese;
+
+        // Update the dashboard
 
         document.getElementById("selectedCorr").innerText = d.correlation;
         document.getElementById("selectedTranslation").innerText =
           d.translation;
         document.getElementById("selectedTotal").innerText = d.total;
-        document.getElementById("selectedObese").innerText = d.obese;
+        document.getElementById("selectedOverweight").innerText = d.obese;
+
         document.getElementById("selectedFactor").innerText = d.dashboardlabels;
         document.getElementById("selectedPercent").innerText = d.counts;
 
@@ -501,9 +542,10 @@ function init() {
           if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          if (!selectedFactor) noHighlight();
+          if (!selectedFactor) noHighlight(d.factor);
         })
         .on("click", handleClick);
+      // .on("click", handleClickDesciprtion);
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -564,7 +606,7 @@ function init() {
           if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          if (!selectedFactor) noHighlight();
+          if (!selectedFactor) noHighlight(d.factor);
         });
 
       // Add legend label
@@ -593,9 +635,10 @@ function init() {
           if (!selectedFactor) highlight(d.factor);
         })
         .on("mouseleave", function (d) {
-          if (!selectedFactor) noHighlight();
+          if (!selectedFactor) noHighlight(d.factor);
         })
         .on("click", handleClick);
+      // .on("click", handleClickDesciprtion);
     });
   }
 
@@ -644,13 +687,11 @@ class Gauge {
       margin: 10,
       minValue: -1,
       maxValue: 1,
-      majorTicks: 5,
+      majorTicks: 6,
       lowThreshhold: -0.3,
       highThreshhold: 0.7,
       scale: "linear",
-      lowThreshholdColor: "#009900",
-      defaultColor: "#ffe500",
-      highThreshholdColor: "#cc0000",
+
       transitionMs: 1000,
       displayUnit: "Value",
     };
@@ -690,17 +731,21 @@ class Gauge {
         .range([0, 1])
         .domain([this.config.minValue, this.config.maxValue]);
     }
-
-    const colorDomain = [
-      this.config.lowThreshhold,
-      this.config.highThreshhold,
-    ].map(this.scale);
+    // Define the new color thresholds and colors
+    const colorDomain = [-1, -0.7, -0.3, 0, 0.3, 0.7, 1].map(this.scale);
     const colorRange = [
-      this.config.lowThreshholdColor,
-      this.config.defaultColor,
-      this.config.highThreshholdColor,
+      "#00D200",
+      "#3FFF00",
+      "#D9FF00",
+      "#FFFFFF",
+      "#FFE600",
+      "#FFAA32",
+      "#FF4949",
     ];
     this.colorScale = d3.scaleThreshold().domain(colorDomain).range(colorRange);
+
+    // Set the ticks explicitly
+    // this.ticks = [-1, -0.5, 0, 0.5, 1];
 
     let ticks = this.config.majorTicks;
     if (this.config.scale === "log") {
@@ -781,7 +826,7 @@ class Gauge {
           this.labelInset - this._radius()
         })`;
       })
-      .text(d3.format("1,.0f"));
+      .text(d3.format(".1f"));
 
     lg.selectAll("line")
       .data(this.ticks)
