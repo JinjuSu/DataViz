@@ -397,7 +397,7 @@ function init() {
       d3.selectAll(".bars").style("opacity", 0.3);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 0.3);
       d3.selectAll(".bubbles").style("opacity", 0.3);
-      d3.selectAll(".myrect").style("opacity", 0.3);
+      d3.selectAll(".rect-bullet").style("opacity", 0.3);
 
       // Highlight the associated bar, legend, and bubble
       d3.selectAll("." + factor.replace(/ /g, "")).style("opacity", 1);
@@ -405,7 +405,10 @@ function init() {
         .style("font-weight", "bold")
         .style("opacity", 1);
       d3.selectAll(".bubble." + factor.replace(/ /g, "")).style("opacity", 1);
-      d3.selectAll(".myrect." + factor.replace(/ /g, "")).style("opacity", 1);
+      d3.selectAll(".rect-bullet." + factor.replace(/ /g, "")).style(
+        "opacity",
+        1
+      );
     };
 
     var noHighlight = function () {
@@ -413,7 +416,7 @@ function init() {
       d3.selectAll(".bars").style("opacity", 1);
       d3.selectAll(".circularBarPlot-legend").style("opacity", 1);
       d3.selectAll(".bubbles").style("opacity", 1);
-      d3.selectAll(".myrect").style("opacity", 1);
+      d3.selectAll(".rect-bullet").style("opacity", 1);
 
       // Reset the corresponding legend rectangles and labels
       d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
@@ -623,7 +626,7 @@ function init() {
         .attr("width", 14) // Width of the rectangles
         .attr("height", 14) // Height of the rectangles
         .attr("class", function (d) {
-          return d.factor.replace(/ /g, "");
+          return "rect-bullet " + d.factor.replace(/ /g, "");
         })
         .style("fill", function (d) {
           return barColor(d.factor);
