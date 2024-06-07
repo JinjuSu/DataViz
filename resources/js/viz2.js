@@ -534,6 +534,7 @@ function init() {
             })
             .padAngle(0.1)
             .padRadius(innerRadius)
+            .cornerRadius(10)
         )
         .on("mouseover", function (d) {
           if (!selectedFactor) highlight(d.factor);
@@ -543,7 +544,6 @@ function init() {
         })
         .on("click", handleClick);
 
-      // Update existing bars
       bars
         .merge(newBars)
         .transition() // Apply the transition
@@ -564,6 +564,7 @@ function init() {
             isInitialLoad = false;
             return d3
               .arc()
+              .cornerRadius(2)
               .innerRadius(innerRadius)
               .outerRadius(interpolateOuterRadius(t))
               .startAngle(x(d.factor))
@@ -572,7 +573,6 @@ function init() {
               .padRadius(innerRadius)();
           };
         });
-
       // Exit and remove old bars
       bars.exit().remove();
 
@@ -605,7 +605,6 @@ function init() {
         .attr("x", width / 2 - 55)
         .attr("y", -height / 2 + 40)
         .text("Risk Health");
-
       svgCirBar
         .append("text")
         .attr("class", "health-factor-title")
@@ -884,8 +883,11 @@ class Gauge {
 
     const pointer = pg
       .append("path")
-      .attr("d", d3.line())
-      .attr("transform", `rotate(${this.minAngle})`);
+      .attr("d", d3.line()(this.lineData))
+      .attr("transform", `rotate(${this.minAngle})`)
+      .style("fill", "#211c33") // Pointer fill color
+      .style("stroke-width", "1px") // Pointer border width
+      .style("filter", "drop-shadow(2px 2px 2px #999)"); // Pointer shadow
 
     this.pointer = pointer;
   }

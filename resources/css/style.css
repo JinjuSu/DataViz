@@ -10,10 +10,11 @@
   fill: steelblue;
 }
 
-.gauge g.pointer {
+/* .gauge g.pointer {
   fill: #e85116;
   stroke: #b64011;
-}
+} */
+
 .gauge g.label text {
   text-anchor: middle;
   font-size: 12px;
