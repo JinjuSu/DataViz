@@ -186,3 +186,13 @@ svg text {
   color: aqua;
   /* #5721f0 */
 }
+
+.readmore {
+  font-size: 20px;
+  font-weight: bold;
+  color: #a09dab5e;
+}
+
+.about-data {
+  color: #a09dab5e;
+}

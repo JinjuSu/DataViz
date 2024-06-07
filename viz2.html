@@ -158,6 +158,41 @@
               </div>
             </div>
           </div>
+
+          <div class="row mt-5">
+            <p class="readmore mt-5">
+              About the Pearson's correlation coefficient
+              <i
+                class="fa-solid fa-up-right-and-down-left-from-center"
+                style="color: #ffd43b"
+                id="read-more"
+                @click="expandCorr"
+              ></i>
+            </p>
+            <div v-if="readCorr">
+              <ul>
+                <li>No correlation: If r is exactly 0.</li>
+                <li>
+                  Weak positive correlation: If r is greater than 0 but less
+                  than 0.3.
+                </li>
+                <li>
+                  Moderate positive correlation: If r is between 0.3 (inclusive)
+                  and 0.7.
+                </li>
+                <li>Strong positive correlation: If r is 0.7 or greater.</li>
+                <li>
+                  Weak negative correlation: If r is less than 0 but greater
+                  than -0.3.
+                </li>
+                <li>
+                  Moderate negative correlation: If r is between -0.3
+                  (inclusive) and -0.7.
+                </li>
+                <li>Strong negative correlation: If r is -0.7 or less.</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div class="col-sm-9 col-md-8 col-lg-6">
@@ -224,6 +259,39 @@
               facere perferendis sed facilis porro.
             </p>
           </div>
+
+          <p class="readmore">
+            Read more abou the health factor's data information
+            <i
+              class="fa-solid fa-up-right-and-down-left-from-center"
+              style="color: #ffd43b"
+              id="read-more"
+              @click="expandReadmore"
+            ></i>
+          </p>
+          <div v-if="readmore">
+            <p>
+              (n) National Health and Medical Research Council (NHMRC) 2009
+              guideline 1 for the consumption of alcohol which recommends no
+              more than 2 standard drinks per day. For more information see
+              Methodology.
+            </p>
+            <p>
+              (ah) These estimates include persons who reported no walking for
+              transport, walking for fitness, sport or recreation, moderate
+              exercise and/or vigorous exercise.
+            </p>
+            <div class="about-data">
+              <p>This data comes from National Health Survey, 2022.</p>
+              <p>
+                Visit National Health Survey Methodology, 2022 to understand
+                more about how this data was collected.
+              </p>
+              <p>
+                Australian Bureau of Statistics website http://www.abs.gov.au/
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -255,9 +323,25 @@
               playToggle: false,
               intervalId: null,
               currentIndex: 0,
+              readmore: false,
+              readCorr: false,
             };
           },
           methods: {
+            expandCorr() {
+              if (this.readCorr) {
+                this.readCorr = false;
+              } else {
+                this.readCorr = true;
+              }
+            },
+            expandReadmore() {
+              if (this.readmore) {
+                this.readmore = false;
+              } else {
+                this.readmore = true;
+              }
+            },
             togglePlay() {
               if (this.intervalId) {
                 clearInterval(this.intervalId);
