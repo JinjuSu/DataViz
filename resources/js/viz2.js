@@ -66,6 +66,8 @@ function init() {
 
       const summaryData = data[0];
       const correlationColor = getColorForCorrelation(summaryData.correlation);
+      // Test printing new data
+      console.log(summaryData);
 
       // Update the description text
       document.getElementById("selectedTranslationDescription").innerText =
@@ -81,8 +83,7 @@ function init() {
       document.getElementById("selectedYearDescription2").innerText =
         yearDescription;
 
-      // Update the dashboards
-      console.log(summaryData);
+      // Update with animation
       document.getElementById("selectedCorr").innerText =
         summaryData.correlation;
       document.getElementById("selectedTranslation").innerText =
@@ -467,70 +468,6 @@ function init() {
         .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
-      // Add the bars with animation
-      // svgCirBar
-      //   .append("g")
-      //   .selectAll("path")
-      //   .data(data)
-      //   .enter()
-      //   .append("path")
-      //   .attr("class", function (d) {
-      //     return "bars " + d.factor.replace(/ /g, "");
-      //   })
-      //   .attr("fill", function (d) {
-      //     return barColor(d.factor);
-      //   })
-      //   .attr(
-      //     "d",
-      //     d3
-      //       .arc() // Initial state with zero height and angle
-      //       .innerRadius(innerRadius)
-      //       .outerRadius(innerRadius) // Start with innerRadius for the animation
-      //       .outerRadius(function (d) {
-      //         return y(d["percent"]);
-      //       })
-      //       .startAngle(function (d) {
-      //         return x(d.factor);
-      //       })
-      //       .endAngle(function (d) {
-      //         return x(d.factor) + x.bandwidth();
-      //       })
-      //       .padAngle(0.1)
-      //       .padRadius(innerRadius)
-      //   )
-      //   .on("mouseover", function (d) {
-      //     if (!selectedFactor) highlight(d.factor);
-      //   })
-      //   .on("mouseleave", function (d) {
-      //     if (!selectedFactor) noHighlight(d.factor);
-      //   })
-      //   .on("click", handleClick)
-      //   .transition() // Apply the transition
-      //   .duration(1000) // Duration of the transition
-      //   .delay(function (d, i) {
-      //     return i * 100;
-      //   }) // Stagger the appearance of the bars
-      //   .attrTween("d", function (d) {
-      //     var interpolateOuterRadius = d3.interpolate(
-      //       innerRadius,
-      //       y(d.percent)
-      //     );
-      //     var interpolateEndAngle = d3.interpolate(
-      //       x(d.factor),
-      //       x(d.factor) + x.bandwidth()
-      //     );
-      //     return function (t) {
-      //       return d3
-      //         .arc()
-      //         .innerRadius(innerRadius)
-      //         .outerRadius(interpolateOuterRadius(t))
-      //         .startAngle(x(d.factor))
-      //         .endAngle(interpolateEndAngle(t))
-      //         .padAngle(0.1)
-      //         .padRadius(innerRadius)();
-      //     };
-      //   });
-
       // Bind the data to the bars
       var bars = svgCirBar.selectAll(".bars").data(data, function (d) {
         return d.factor;
@@ -731,7 +668,7 @@ function init() {
       return;
     }
     selectedFactor = null;
-    noHighlight();
+    // noHighlight();
   });
 }
 

@@ -23,7 +23,8 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <title>Page 5: Obesity & Health Rish Factors</title>
   </head>
   <body class="body" id="app">
@@ -79,8 +80,18 @@
             <div>
               <p class="sub-header">
                 Pick a year or play the time line
-                <i class="fa-solid fa-circle-play"></i>
-                <i class="fa-solid fa-stop"></i>
+                <i
+                  v-if="!playToggle"
+                  class="fa-solid fa-circle-play"
+                  id="play-icon"
+                  @click="togglePlay"
+                ></i>
+                <i
+                  v-if="playToggle"
+                  class="fa-solid fa-stop"
+                  id="pause-icon"
+                  @click="togglePlay"
+                ></i>
               </p>
             </div>
             <div class="col">
@@ -224,11 +235,46 @@
         </div>
       </div>
     </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
+        const app = Vue.createApp({
+          data() {
+            return {
+              playToggle: false,
+              intervalId: null,
+              currentIndex: 0,
+            };
+          },
+          methods: {
+            togglePlay() {
+              if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+                this.playToggle = false;
+              } else {
+                this.intervalId = setInterval(this.checkNextRadio, 2000);
+                this.playToggle = true;
+              }
+            },
+            checkNextRadio() {
+              const radios = document.querySelectorAll(
+                '.radio-tick input[type="radio"]'
+              );
+              radios[this.currentIndex].checked = true;
+              radios.forEach((r) => r.parentNode.classList.remove("checked"));
+              radios[this.currentIndex].parentNode.classList.add("checked");
+              updateDataset(radios[this.currentIndex].value);
+
+              this.currentIndex = (this.currentIndex + 1) % radios.length;
+            },
+          },
+        }).mount("#app");
+
         const radios = document.querySelectorAll(
           '.radio-tick input[type="radio"]'
         );
+
         radios.forEach((radio) => {
           radio.addEventListener("change", () => {
             radios.forEach((r) => r.parentNode.classList.remove("checked"));
@@ -242,3 +288,42 @@
     </script>
   </body>
 </html>
+
+<!--         const playIcon = document.getElementById("play-icon");
+        const pauseIcon = document.getElementById("pause-icon");
+
+        let intervalId;
+        let currentIndex = 0;
+
+        function checkNextRadio() {
+          radios[currentIndex].checked = true;
+          radios.forEach((r) => r.parentNode.classList.remove("checked"));
+          radios[currentIndex].parentNode.classList.add("checked");
+          updateDataset(radios[currentIndex].value);
+
+          currentIndex = (currentIndex + 1) % radios.length;
+        }
+
+        playIcon.addEventListener("click", () => {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+            playIcon.classList.remove("active");
+            app.playToggle = false;
+          } else {
+            intervalId = setInterval(checkNextRadio, 2000);
+            playIcon.classList.add("active");
+            app.playToggle = true;
+            console.log("Play icon is clicked", app.playToggle);
+          }
+        });
+
+        pauseIcon.addEventListener("click", () => {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+            playIcon.classList.remove("active");
+            app.playToggle = false;
+            console.log("Pause icon is clicked", app.playToggle);
+          }
+        }); -->
