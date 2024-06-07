@@ -13,6 +13,7 @@ function init() {
   let powerGauge;
   let barColor;
   let selectedFactor = null;
+  let isInitialLoad = true;
 
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
@@ -578,7 +579,7 @@ function init() {
         }) // Stagger the appearance of the bars
         .attrTween("d", function (d) {
           var interpolateOuterRadius = d3.interpolate(
-            innerRadius,
+            isInitialLoad ? innerRadius : y(d.percent),
             y(d.percent)
           );
           var interpolateEndAngle = d3.interpolate(
@@ -586,6 +587,7 @@ function init() {
             x(d.factor) + x.bandwidth()
           );
           return function (t) {
+            isInitialLoad = false;
             return d3
               .arc()
               .innerRadius(innerRadius)
