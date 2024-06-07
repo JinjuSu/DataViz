@@ -34,7 +34,7 @@ function init() {
 
   function updateDataset(value) {
     selectedBarDatatSet = datasets[value];
-    clearBubblePlot();
+    // clearBubblePlot();
     drawCircularBarPlot();
     updateDashboardCards();
   }
@@ -175,203 +175,6 @@ function init() {
       width = 600 - margin.left - margin.right,
       height = 420 - margin.top - margin.bottom,
       padding = 60;
-
-    // Append the bubble plot svg to the div
-    var svgBubble = d3
-      .select("#bubblePlot")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // Read the data for Bubble
-    d3.csv(bubbleData, function (data) {
-      // Convert numerical values from strings to numbers
-      data.forEach(function (d) {
-        d.alcohol = +d.alcohol.replace(",", "");
-        d.fruit = +d.fruit.replace(",", "");
-        d.vegatable = +d.vegatable.replace(",", ""); // corrected typo here
-        d.smoke = +d.smoke.replace(",", "");
-        d.physical = +d.physical.replace(",", "");
-        d.obese = +d.obese.replace(",", "");
-        d.total = +d.total.replace(",", "");
-      });
-
-      // Scale X axis (obese)
-      var x = d3
-        .scaleLinear()
-        .domain([
-          5000,
-          d3.max(data, function (d) {
-            return d.obese + 2000;
-          }),
-        ])
-        .range([padding, width]);
-
-      // Add x-axis
-      svgBubble
-        .append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (height - padding) + ")")
-        .call(d3.axisBottom(x));
-
-      // Add X axis label
-      svgBubble
-        .append("text")
-        .attr("class", "x-axis-label")
-        .attr(
-          "transform",
-          "translate(" +
-            (width / 2 - 50) +
-            " ," +
-            (height + margin.top - 10) +
-            ")"
-        )
-        .style("text-anchor", "middle")
-        .text("Overweight or Obese Population");
-
-      // Add Y axis (health factors)
-      var y = d3
-        .scaleLinear()
-        .domain([
-          0,
-          d3.max(data, function (d) {
-            return (
-              Math.max(d.alcohol, d.fruit, d.vegatable, d.smoke, d.physical) +
-              2000
-            );
-          }),
-        ])
-        .range([height - padding, 0]);
-
-      svgBubble
-        .append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + padding + ",0)")
-        .call(d3.axisLeft(y));
-
-      // Add Y axis label
-      svgBubble
-        .append("text")
-        .attr("class", "y-axis-label")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 20)
-        .attr("x", 0 - height / 2 + 20)
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .text("Risk health factors consumption");
-
-      // Add a scale for bubble size
-      var z = d3
-        .scaleLinear()
-        .domain([
-          0,
-          d3.max(data, function (d) {
-            return Math.max(
-              d.alcohol,
-              d.fruit,
-              d.vegatable,
-              d.smoke,
-              d.physical
-            );
-          }),
-        ])
-        .range([4, 24]);
-
-      // Add a scale for bubble color
-      var bubbleColor = d3
-        .scaleOrdinal()
-        .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
-        .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
-
-      // Create a tooltip div that is hidden by default:
-      var tooltip = d3.select("body").append("div").attr("class", "tooltip");
-
-      // Functions to show / update / hide the tooltip
-      var showTooltip = function (d, factor) {
-        tooltip
-          .style("opacity", 1)
-          .html(
-            " Year of data collection: " +
-              d.year +
-              "<br>Total population who were overweight of obese: " +
-              d.obese +
-              // "<br>Total: " +
-              // d.total +
-              "<br>" +
-              "Total amount of " +
-              factor.charAt(0) +
-              factor.slice(1) +
-              " that did not meet health guideline: " +
-              d[factor]
-          )
-          .style("left", event.pageX + 10 + "px")
-          .style("top", event.pageY - 28 + "px");
-      };
-
-      var moveTooltip = function (d) {
-        tooltip
-          .style("left", event.pageX + 10 + "px")
-          .style("top", event.pageY - 28 + "px");
-      };
-
-      var hideTooltip = function (d) {
-        tooltip.style("opacity", 0);
-      };
-
-      // Add dots for each health factor
-      var healthFactors = [
-        "alcohol",
-        "fruit",
-        "vegatable",
-        "smoke",
-        "physical",
-      ];
-
-      // Add dots for each health factor
-      healthFactors.forEach(function (factor) {
-        svgBubble
-          .selectAll("dot")
-          .data(data)
-          .enter()
-          .append("circle")
-          .attr("class", function (d) {
-            return "bubbles bubble " + factor.replace(/ /g, "");
-          }) // Add class
-          .attr("cx", function (d) {
-            return x(d.obese);
-          })
-          .attr("cy", function (d) {
-            return y(d[factor]);
-          })
-          .attr("r", function (d) {
-            return z(d[factor]);
-          })
-          .style("fill", function (d) {
-            return bubbleColor(factor);
-          })
-          .on("mouseover", function (d) {
-            showTooltip(d, factor);
-          })
-          .on("mousemove", moveTooltip)
-          .on("mouseleave", hideTooltip);
-      });
-
-      // Animate bubbles
-      svgBubble
-        .selectAll("circle")
-        .transition()
-        .delay(function (d, i) {
-          return i * 200;
-        }) // Staggered delay
-        .duration(2000)
-        .attr("cx", function (d) {
-          return x(d.obese);
-        });
-    });
-
-    // -------------------- Bubble chart inside the drawCircularBarplot() ends here -------------------- //
 
     // -------------------- Circular chart plot inside the drawCircularBarplot() starts here -------------------- //
 
@@ -669,7 +472,193 @@ function init() {
     });
   }
   // -------------------- ends of drawCircularBarPlot() -------------------- //
+  // Append the bubble plot svg to the div
+  var svgBubble = d3
+    .select("#bubblePlot")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+  // Read the data for Bubble
+  d3.csv(bubbleData, function (data) {
+    // Convert numerical values from strings to numbers
+    data.forEach(function (d) {
+      d.alcohol = +d.alcohol.replace(",", "");
+      d.fruit = +d.fruit.replace(",", "");
+      d.vegatable = +d.vegatable.replace(",", ""); // corrected typo here
+      d.smoke = +d.smoke.replace(",", "");
+      d.physical = +d.physical.replace(",", "");
+      d.obese = +d.obese.replace(",", "");
+      d.total = +d.total.replace(",", "");
+    });
+
+    // Scale X axis (obese)
+    var x = d3
+      .scaleLinear()
+      .domain([
+        5000,
+        d3.max(data, function (d) {
+          return d.obese + 2000;
+        }),
+      ])
+      .range([padding, width]);
+
+    // Add x-axis
+    svgBubble
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + (height - padding) + ")")
+      .call(d3.axisBottom(x));
+
+    // Add X axis label
+    svgBubble
+      .append("text")
+      .attr("class", "x-axis-label")
+      .attr(
+        "transform",
+        "translate(" +
+          (width / 2 - 50) +
+          " ," +
+          (height + margin.top - 10) +
+          ")"
+      )
+      .style("text-anchor", "middle")
+      .text("Overweight or Obese Population");
+
+    // Add Y axis (health factors)
+    var y = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(data, function (d) {
+          return (
+            Math.max(d.alcohol, d.fruit, d.vegatable, d.smoke, d.physical) +
+            2000
+          );
+        }),
+      ])
+      .range([height - padding, 0]);
+
+    svgBubble
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(" + padding + ",0)")
+      .call(d3.axisLeft(y));
+
+    // Add Y axis label
+    svgBubble
+      .append("text")
+      .attr("class", "y-axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left + 20)
+      .attr("x", 0 - height / 2 + 20)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Risk health factors consumption");
+
+    // Add a scale for bubble size
+    var z = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(data, function (d) {
+          return Math.max(d.alcohol, d.fruit, d.vegatable, d.smoke, d.physical);
+        }),
+      ])
+      .range([4, 24]);
+
+    // Add a scale for bubble color
+    var bubbleColor = d3
+      .scaleOrdinal()
+      .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
+      .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
+
+    // Create a tooltip div that is hidden by default:
+    var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
+    // Functions to show / update / hide the tooltip
+    var showTooltip = function (d, factor) {
+      tooltip
+        .style("opacity", 1)
+        .html(
+          " Year of data collection: " +
+            d.year +
+            "<br>Total population who were overweight of obese: " +
+            d.obese +
+            // "<br>Total: " +
+            // d.total +
+            "<br>" +
+            "Total amount of " +
+            factor.charAt(0) +
+            factor.slice(1) +
+            " that did not meet health guideline: " +
+            d[factor]
+        )
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY - 28 + "px");
+    };
+
+    var moveTooltip = function (d) {
+      tooltip
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY - 28 + "px");
+    };
+
+    var hideTooltip = function (d) {
+      tooltip.style("opacity", 0);
+    };
+
+    // Add dots for each health factor
+    var healthFactors = ["alcohol", "fruit", "vegatable", "smoke", "physical"];
+
+    // Add dots for each health factor
+    healthFactors.forEach(function (factor) {
+      svgBubble
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", function (d) {
+          return "bubbles bubble " + factor.replace(/ /g, "");
+        }) // Add class
+        .attr("cx", 0)
+        .attr("cy", function (d) {
+          return y(d[factor]);
+        })
+        .attr("r", function (d) {
+          return z(d[factor]);
+        })
+        .style("fill", function (d) {
+          return bubbleColor(factor);
+        })
+        .on("mouseover", function (d) {
+          showTooltip(d, factor);
+        })
+        .on("mousemove", moveTooltip)
+        .on("mouseleave", hideTooltip)
+        .transition() // Add transition
+        .duration(2000) // Set duration for the transition
+        .attr("cx", function (d) {
+          return x(d.obese);
+        });
+    });
+
+    // Animate bubbles
+    svgBubble
+      .selectAll("circle")
+      .transition()
+      .delay(function (d, i) {
+        return i * 200;
+      }) // Staggered delay
+      .duration(2000)
+      .attr("cx", function (d) {
+        return x(d.obese);
+      });
+  });
+
+  // -------------------- Bubble chart inside the drawCircularBarplot() ends here -------------------- //
   // Initialize the plot with the default dataset
   drawCircularBarPlot();
   updateDashboardCards();
