@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot</title>
+<style>    
+
+*{
+    margin: 0;
+    padding:0;
+}
+
+body {
+    position: relative;
+    background-color: #ffffff;
+    height: 1000px;
+}
+
+#chart1 {
+    position: absolute;
+    top: 0px;
+    left:250px;
+    margin-bottom:150px;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: rgb(180, 247, 174);	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
+#controls {
+    width: 10rem;
+    height: inherit;
+    background: rgb(223, 221, 221);
+    position: absolute;
+    top:0;
+    left:0;
+}
+
+#replay, #filter{
+    position: absolute;
+
+    transform: translateX(-50%);
+    text-decoration: none;
+    color: #272727;
+    font-family: sans-serif;
+    font-size: 20px;
+    border: 5px solid #272727;
+    padding: 4px 4px;
+    overflow: hidden;
+
+}
+
+#replay{
+    top:5%;
+    left:50%;
+}
+
+#filter{
+    top:12%;
+    left:50%;
+}
+
+#popup {
+    width: 200px;
+    height: 40rem;
+    max-height: 40rem;
+    overflow-y: scroll;
+    top:8rem;
+    left:10rem;
+    position: absolute;
+    background-color: grey;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.countrylabel{
+    font-size:20px;
+    display: block;
+    padding: 5px 10px;
+
+}
+
+#animate{
+    text-decoration: none;
+    min-height: 4rem;
+    color: #251e1e;
+    font-family: sans-serif;
+    font-size: 25px;
+    border: 5px solid #251e1e;
+    padding: 10px 50px;
+    position: relative;
+ 
+}
+
+</style>
+
+</head>
+<body>
+    <div id="chart1"></div>
+    <div id="controls">
+        <button id="replay">Replay</button>
+        <button id="filter">Filter</button>
+     
+    </div>
+    <div id="popup">
+
+    </div>
+    <div id="my_line"></div>
+    <script src="./d3.js"></script>
+    <script src="./d3-selection-multi.js"></script>
+    <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+    <script src="jquery.js"></script>
+    <script src="./jquerycsv.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>

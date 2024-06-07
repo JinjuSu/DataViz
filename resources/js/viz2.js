@@ -14,6 +14,12 @@ function init() {
   let barColor;
   let selectedFactor = null;
 
+  // set the dimensions and margins of the graph
+  var margin = { top: 10, right: 20, bottom: 30, left: 50 },
+    width = 600 - margin.left - margin.right,
+    height = 420 - margin.top - margin.bottom,
+    padding = 60;
+
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
     if (correlation > 0 && correlation < 0.3) return "#FFE600";
@@ -109,6 +115,8 @@ function init() {
     d3.select("#bubblePlot").select("svg").remove();
   }
 
+  // -------------------- Bubble plot's drawCircularBarPlot() when updated -------------------- //
+
   function drawCircularBarPlot() {
     // Clear the previous plot
     d3.select("#circularBarPlot").select("svg").remove();
@@ -133,14 +141,11 @@ function init() {
       default:
         year = "2022";
     }
-
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
       height = 420 - margin.top - margin.bottom,
       padding = 60;
-
-    // -------------------- Bubble plot starts here -------------------- //
 
     // Append the bubble plot svg to the div
     var svgBubble = d3
@@ -324,48 +329,24 @@ function init() {
           .on("mouseleave", hideTooltip);
       });
 
-      // Add legend
-      var size = 20;
+      // Animate bubbles
       svgBubble
-        .selectAll("myrect")
-        .data(healthFactors)
-        .enter()
-        .append("rect")
-        .attr("x", 700)
-        .attr("y", function (d, i) {
-          return 10 + i * (size + 5);
-        }) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("width", size)
-        .attr("height", size)
-        .style("fill", function (d) {
-          return bubbleColor(d);
+        .selectAll("circle")
+        .transition()
+        .delay(function (d, i) {
+          return i * 200;
+        }) // Staggered delay
+        .duration(2000)
+        .attr("cx", function (d) {
+          return x(d.obese);
         });
-
-      // Add labels beside legend dots
-      svgBubble
-        .selectAll("mylabels")
-        .data(healthFactors)
-        .enter()
-        .append("text")
-        .attr("x", 700 + size * 1.2)
-        .attr("y", function (d, i) {
-          return 10 + i * (size + 5) + size / 2;
-        }) // 100 is where the first dot appears. 25 is the distance between dots
-        .style("fill", function (d) {
-          return bubbleColor(d);
-        })
-        .text(function (d) {
-          return d;
-        })
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
     });
 
-    // -------------------- Bubble plot ends here -------------------- //
+    // -------------------- Bubble chart inside the drawCircularBarplot() ends here -------------------- //
 
-    // -------------------- Circular bar plot starts here -------------------- //
+    // -------------------- Circular chart plot inside the drawCircularBarplot() starts here -------------------- //
 
-    // append the svg for circular bar plot
+    // append the svg for circular bar chart
     var innerRadius = 60,
       outerRadius = Math.min(width, height) / 1.9;
 
@@ -408,28 +389,6 @@ function init() {
       // Reset the corresponding legend rectangles and labels
       d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
     };
-
-    function handleClickDesciprtion(d) {
-      const factor = d.factor;
-      if (selectedFactor === factor) {
-        selectedFactor = null;
-        noHighlight();
-      } else {
-        selectedFactor = factor;
-        highlight(factor);
-
-        const correlationColor = getColorForCorrelation(d.correlation);
-        const factorColor = barColor(d.factor);
-        // Update the description text
-        document.getElementById("selectedTranslationDescription").innerText =
-          d.translation;
-        document.getElementById("selectedFactorDescription").innerText =
-          d.counts;
-        document.getElementById("selectedTotalDescription").innerText = d.total;
-        document.getElementById("selectedOverweightDescription").innerText =
-          document.obese;
-      }
-    }
 
     function handleClick(d) {
       const factor = d.factor;
@@ -508,7 +467,7 @@ function init() {
         .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
-      // Add the bars
+      // Add the bars with animation
       svgCirBar
         .append("g")
         .selectAll("path")
@@ -524,8 +483,9 @@ function init() {
         .attr(
           "d",
           d3
-            .arc()
+            .arc() // Initial state with zero height and angle
             .innerRadius(innerRadius)
+            .outerRadius(innerRadius) // Start with innerRadius for the animation
             .outerRadius(function (d) {
               return y(d["percent"]);
             })
@@ -544,8 +504,32 @@ function init() {
         .on("mouseleave", function (d) {
           if (!selectedFactor) noHighlight(d.factor);
         })
-        .on("click", handleClick);
-      // .on("click", handleClickDesciprtion);
+        .on("click", handleClick)
+        .transition() // Apply the transition
+        .duration(1000) // Duration of the transition
+        .delay(function (d, i) {
+          return i * 100;
+        }) // Stagger the appearance of the bars
+        .attrTween("d", function (d) {
+          var interpolateOuterRadius = d3.interpolate(
+            innerRadius,
+            y(d.percent)
+          );
+          var interpolateEndAngle = d3.interpolate(
+            x(d.factor),
+            x(d.factor) + x.bandwidth()
+          );
+          return function (t) {
+            return d3
+              .arc()
+              .innerRadius(innerRadius)
+              .outerRadius(interpolateOuterRadius(t))
+              .startAngle(x(d.factor))
+              .endAngle(interpolateEndAngle(t))
+              .padAngle(0.1)
+              .padRadius(innerRadius)();
+          };
+        });
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -650,6 +634,7 @@ function init() {
   window.updateDataset = updateDataset;
 
   // -------------------- Circular bar plot ends here -------------------- //
+  // -------------------- Gauge chart ends here -------------------- //
 
   // Initialize the gauge
   powerGauge = new Gauge({
