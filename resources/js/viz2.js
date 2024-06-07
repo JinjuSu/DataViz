@@ -70,6 +70,8 @@ function init() {
       console.log(summaryData);
 
       // Update the description text
+      document.getElementById("selectedMessegeDescription").innerText =
+        summaryData.longmessege;
       document.getElementById("selectedTranslationDescription").innerText =
         summaryData.translation;
       document.getElementById("selectedFactorDescription").innerText =
@@ -78,17 +80,21 @@ function init() {
         summaryData.total;
       document.getElementById("selectedOverweightDescription").innerText =
         summaryData.obese;
+      document.getElementById("selectedCorrDescription").innerText =
+        summaryData.correlation;
       document.getElementById("selectedYearDescription").innerText =
         yearDescription;
       document.getElementById("selectedYearDescription2").innerText =
         yearDescription;
 
       // Update with animation
+      document.getElementById("selectedMessage").innerText =
+        summaryData.messege;
       document.getElementById("selectedCorr").innerText =
         summaryData.correlation;
       document.getElementById("selectedTranslation").innerText =
         summaryData.translation;
-      document.getElementById("selectedTotal").innerText = summaryData.total;
+      // document.getElementById("selectedTotal").innerText = summaryData.total;
       document.getElementById("selectedOverweight").innerText =
         summaryData.obese;
       document.getElementById("selectedOverweight").innerText =
@@ -102,6 +108,8 @@ function init() {
       document.getElementById("selectedTranslation").style.color =
         correlationColor;
       document.getElementById("selectedCorr").style.color = correlationColor;
+      document.getElementById("selectedMessage").style.color = correlationColor;
+      document.getElementById("selectedCall").style.color = correlationColor;
 
       // Set the text color of the selected health factor
       const factorColor = barColor(summaryData.dashboardlabels);
@@ -111,6 +119,25 @@ function init() {
       // Update the gauge with the correlation value
       powerGauge.update(summaryData.correlation);
     });
+  }
+
+  function updateTextWithAnimation(selector, newValue) {
+    const textElement = d3.select(selector);
+    const currentValue = parseFloat(textElement.text());
+    if (isNaN(currentValue)) {
+      textElement.text(newValue);
+      return;
+    }
+
+    textElement
+      .transition()
+      .duration(1000)
+      .tween("text", function () {
+        const interpolator = d3.interpolateNumber(currentValue, newValue);
+        return function (t) {
+          this.textContent = d3.format(".1f")(interpolator(t));
+        };
+      });
   }
 
   function clearBubblePlot() {
@@ -410,6 +437,8 @@ function init() {
         console.log("d.factor :", d.factor);
         console.log("d.counts :", d.counts);
 
+        document.getElementById("selectedMessegeDescription").innerText =
+          d.longmessege;
         document.getElementById("selectedTranslationDescription").innerText =
           d.translation;
         document.getElementById("selectedFactorDescription").innerText =
@@ -417,13 +446,15 @@ function init() {
         document.getElementById("selectedTotalDescription").innerText = d.total;
         document.getElementById("selectedOverweightDescription").innerText =
           d.obese;
+        document.getElementById("selectedCorrDescription").innerText =
+          d.correlation;
 
         // Update the dashboard
-
+        document.getElementById("selectedMessage").innerText = d.messege;
         document.getElementById("selectedCorr").innerText = d.correlation;
         document.getElementById("selectedTranslation").innerText =
           d.translation;
-        document.getElementById("selectedTotal").innerText = d.total;
+        // document.getElementById("selectedTotal").innerText = d.total;
         document.getElementById("selectedOverweight").innerText = d.obese;
 
         document.getElementById("selectedFactor").innerText = d.dashboardlabels;
@@ -433,6 +464,9 @@ function init() {
         document.getElementById("selectedTranslation").style.color =
           correlationColor;
         document.getElementById("selectedCorr").style.color = correlationColor;
+        document.getElementById("selectedMessage").style.color =
+          correlationColor;
+        document.getElementById("selectedCall").style.color = correlationColor;
 
         // Set the text color of the selected health factor
         document.getElementById("selectedFactor").style.color = factorColor;

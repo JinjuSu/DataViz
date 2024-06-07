@@ -114,6 +114,11 @@
   font-weight: bold;
 }
 
+.correlation-body-msg {
+  font-size: 30px;
+  font-weight: bold;
+}
+
 .page-title {
   font-size: 64px;
   font-weight: semi-bold;
