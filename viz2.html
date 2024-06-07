@@ -23,26 +23,38 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <title>Page 5: Obesity & Health Rish Factors</title>
   </head>
   <body class="body" id="app">
     <div class="container-fluid">
       <p class="page-title">So what causes obesity?</p>
       <div class="row g-2">
-        <div class="col-sm-8 col-md-6 col-lg-4">
+        <div class="col-sm-8 col-md-6 col-lg-3">
           <div class="correlation-scale">
             <div class="gauge-container">
               <div id="gauge"></div>
             </div>
           </div>
         </div>
+
         <div class="col-sm-8 col-md-4 col-lg-2 correlation-text">
           <div class="correlation-card">
             <div class="bubble-card-title" id="selectedTranslation">
               Moderate negative correlation
             </div>
             <div class="correlation-body" id="selectedCorr">-0.41</div>
+          </div>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-2 correlation-text">
+          <div class="correlation-card">
+            <div class="bubble-card-title" id="selectedCall">
+              Call to action!
+            </div>
+            <div class="correlation-body-msg" id="selectedMessage">
+              19,806.80
+            </div>
           </div>
         </div>
         <div class="col-sm-8 col-md-4 col-lg-2">
@@ -61,12 +73,6 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-8 col-md-4 col-lg-2">
-          <div class="bubble-card">
-            <div class="bubble-card-title">Total population</div>
-            <div class="bubble-card-body" id="selectedTotal">19,806.80</div>
-          </div>
-        </div>
       </div>
 
       <div class="row g-4">
@@ -78,9 +84,21 @@
           <div class="row my-4 gx-2">
             <div>
               <p class="sub-header">
-                Pick a year or play the time line
-                <i class="fa-solid fa-circle-play"></i>
-                <i class="fa-solid fa-stop"></i>
+                Pick a year or play the timeline
+                <i
+                  v-if="!playToggle"
+                  class="fa-solid fa-circle-play"
+                  style="color: #ffd43b"
+                  id="play-icon"
+                  @click="togglePlay"
+                ></i>
+                <i
+                  v-if="playToggle"
+                  class="fa-solid fa-stop"
+                  id="pause-icon"
+                  style="color: #b197fc"
+                  @click="togglePlay"
+                ></i>
               </p>
             </div>
             <div class="col">
@@ -152,7 +170,9 @@
             </div>
           </div>
           <div class="row my-3">
-            <p class="sub-header">Read the data (description)</p>
+            <p class="sub-header">
+              <i class="fa-solid fa-glasses"></i> Read the data (description)
+            </p>
 
             <p>
               In
@@ -197,9 +217,11 @@
               </strong>
               with become overweight or obese.
             </p>
-            <p>
-              It can be interpreted that this factor had a high tendency to lead
-              to the condition of overweight or obese.
+            <p class="description-content" id="selectedMessegeDescription">
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              Provident nesciunt voluptatibus ducimus dolorem hic commodi minus
+              illum voluptatem, alias blanditiis? Labore quis, corrupti id harum
+              facere perferendis sed facilis porro.
             </p>
           </div>
         </div>
@@ -224,11 +246,57 @@
         </div>
       </div>
     </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
+        const app = Vue.createApp({
+          data() {
+            return {
+              playToggle: false,
+              intervalId: null,
+              currentIndex: 0,
+            };
+          },
+          methods: {
+            togglePlay() {
+              if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+                this.playToggle = false;
+              } else {
+                this.intervalId = setInterval(this.checkNextRadio, 1300);
+                this.playToggle = true;
+              }
+            },
+            checkNextRadio() {
+              const radios = document.querySelectorAll(
+                '.radio-tick input[type="radio"]'
+              );
+              radios[this.currentIndex].checked = true;
+              radios.forEach((r) => r.parentNode.classList.remove("checked"));
+              radios[this.currentIndex].parentNode.classList.add("checked");
+              updateDataset(radios[this.currentIndex].value);
+
+              this.currentIndex = (this.currentIndex + 1) % radios.length;
+            },
+          },
+          mounted() {
+            // Ensure the checked class is applied on page load
+            const radios = document.querySelectorAll(
+              '.radio-tick input[type="radio"]'
+            );
+            radios.forEach((radio) => {
+              if (radio.checked) {
+                radio.parentNode.classList.add("checked");
+              }
+            });
+          },
+        }).mount("#app");
+
         const radios = document.querySelectorAll(
           '.radio-tick input[type="radio"]'
         );
+
         radios.forEach((radio) => {
           radio.addEventListener("change", () => {
             radios.forEach((r) => r.parentNode.classList.remove("checked"));

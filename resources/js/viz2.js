@@ -13,6 +13,13 @@ function init() {
   let powerGauge;
   let barColor;
   let selectedFactor = null;
+  let isInitialLoad = true;
+
+  // set the dimensions and margins of the graph
+  var margin = { top: 10, right: 20, bottom: 30, left: 50 },
+    width = 600 - margin.left - margin.right,
+    height = 420 - margin.top - margin.bottom,
+    padding = 60;
 
   function getColorForCorrelation(correlation) {
     if (correlation == 0) return "#FFFFFF";
@@ -59,8 +66,12 @@ function init() {
 
       const summaryData = data[0];
       const correlationColor = getColorForCorrelation(summaryData.correlation);
+      // Test printing new data
+      console.log(summaryData);
 
       // Update the description text
+      document.getElementById("selectedMessegeDescription").innerText =
+        summaryData.longmessege;
       document.getElementById("selectedTranslationDescription").innerText =
         summaryData.translation;
       document.getElementById("selectedFactorDescription").innerText =
@@ -69,18 +80,21 @@ function init() {
         summaryData.total;
       document.getElementById("selectedOverweightDescription").innerText =
         summaryData.obese;
+      document.getElementById("selectedCorrDescription").innerText =
+        summaryData.correlation;
       document.getElementById("selectedYearDescription").innerText =
         yearDescription;
       document.getElementById("selectedYearDescription2").innerText =
         yearDescription;
 
-      // Update the dashboards
-      console.log(summaryData);
+      // Update with animation
+      document.getElementById("selectedMessage").innerText =
+        summaryData.messege;
       document.getElementById("selectedCorr").innerText =
         summaryData.correlation;
       document.getElementById("selectedTranslation").innerText =
         summaryData.translation;
-      document.getElementById("selectedTotal").innerText = summaryData.total;
+      // document.getElementById("selectedTotal").innerText = summaryData.total;
       document.getElementById("selectedOverweight").innerText =
         summaryData.obese;
       document.getElementById("selectedOverweight").innerText =
@@ -94,6 +108,8 @@ function init() {
       document.getElementById("selectedTranslation").style.color =
         correlationColor;
       document.getElementById("selectedCorr").style.color = correlationColor;
+      document.getElementById("selectedMessage").style.color = correlationColor;
+      document.getElementById("selectedCall").style.color = correlationColor;
 
       // Set the text color of the selected health factor
       const factorColor = barColor(summaryData.dashboardlabels);
@@ -105,9 +121,30 @@ function init() {
     });
   }
 
+  function updateTextWithAnimation(selector, newValue) {
+    const textElement = d3.select(selector);
+    const currentValue = parseFloat(textElement.text());
+    if (isNaN(currentValue)) {
+      textElement.text(newValue);
+      return;
+    }
+
+    textElement
+      .transition()
+      .duration(1000)
+      .tween("text", function () {
+        const interpolator = d3.interpolateNumber(currentValue, newValue);
+        return function (t) {
+          this.textContent = d3.format(".1f")(interpolator(t));
+        };
+      });
+  }
+
   function clearBubblePlot() {
     d3.select("#bubblePlot").select("svg").remove();
   }
+
+  // -------------------- drawCircularBarPlot() when updated, it draws both Bubble chart and Circular bar chart -------------------- //
 
   function drawCircularBarPlot() {
     // Clear the previous plot
@@ -133,14 +170,11 @@ function init() {
       default:
         year = "2022";
     }
-
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 20, bottom: 30, left: 50 },
       width = 600 - margin.left - margin.right,
       height = 420 - margin.top - margin.bottom,
       padding = 60;
-
-    // -------------------- Bubble plot starts here -------------------- //
 
     // Append the bubble plot svg to the div
     var svgBubble = d3
@@ -324,48 +358,24 @@ function init() {
           .on("mouseleave", hideTooltip);
       });
 
-      // Add legend
-      var size = 20;
+      // Animate bubbles
       svgBubble
-        .selectAll("myrect")
-        .data(healthFactors)
-        .enter()
-        .append("rect")
-        .attr("x", 700)
-        .attr("y", function (d, i) {
-          return 10 + i * (size + 5);
-        }) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("width", size)
-        .attr("height", size)
-        .style("fill", function (d) {
-          return bubbleColor(d);
+        .selectAll("circle")
+        .transition()
+        .delay(function (d, i) {
+          return i * 200;
+        }) // Staggered delay
+        .duration(2000)
+        .attr("cx", function (d) {
+          return x(d.obese);
         });
-
-      // Add labels beside legend dots
-      svgBubble
-        .selectAll("mylabels")
-        .data(healthFactors)
-        .enter()
-        .append("text")
-        .attr("x", 700 + size * 1.2)
-        .attr("y", function (d, i) {
-          return 10 + i * (size + 5) + size / 2;
-        }) // 100 is where the first dot appears. 25 is the distance between dots
-        .style("fill", function (d) {
-          return bubbleColor(d);
-        })
-        .text(function (d) {
-          return d;
-        })
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
     });
 
-    // -------------------- Bubble plot ends here -------------------- //
+    // -------------------- Bubble chart inside the drawCircularBarplot() ends here -------------------- //
 
-    // -------------------- Circular bar plot starts here -------------------- //
+    // -------------------- Circular chart plot inside the drawCircularBarplot() starts here -------------------- //
 
-    // append the svg for circular bar plot
+    // append the svg for circular bar chart
     var innerRadius = 60,
       outerRadius = Math.min(width, height) / 1.9;
 
@@ -409,28 +419,6 @@ function init() {
       d3.selectAll(".circularBarPlot-legend").style("font-weight", "normal");
     };
 
-    function handleClickDesciprtion(d) {
-      const factor = d.factor;
-      if (selectedFactor === factor) {
-        selectedFactor = null;
-        noHighlight();
-      } else {
-        selectedFactor = factor;
-        highlight(factor);
-
-        const correlationColor = getColorForCorrelation(d.correlation);
-        const factorColor = barColor(d.factor);
-        // Update the description text
-        document.getElementById("selectedTranslationDescription").innerText =
-          d.translation;
-        document.getElementById("selectedFactorDescription").innerText =
-          d.counts;
-        document.getElementById("selectedTotalDescription").innerText = d.total;
-        document.getElementById("selectedOverweightDescription").innerText =
-          document.obese;
-      }
-    }
-
     function handleClick(d) {
       const factor = d.factor;
       if (selectedFactor === factor) {
@@ -449,6 +437,8 @@ function init() {
         console.log("d.factor :", d.factor);
         console.log("d.counts :", d.counts);
 
+        document.getElementById("selectedMessegeDescription").innerText =
+          d.longmessege;
         document.getElementById("selectedTranslationDescription").innerText =
           d.translation;
         document.getElementById("selectedFactorDescription").innerText =
@@ -456,13 +446,15 @@ function init() {
         document.getElementById("selectedTotalDescription").innerText = d.total;
         document.getElementById("selectedOverweightDescription").innerText =
           d.obese;
+        document.getElementById("selectedCorrDescription").innerText =
+          d.correlation;
 
         // Update the dashboard
-
+        document.getElementById("selectedMessage").innerText = d.messege;
         document.getElementById("selectedCorr").innerText = d.correlation;
         document.getElementById("selectedTranslation").innerText =
           d.translation;
-        document.getElementById("selectedTotal").innerText = d.total;
+        // document.getElementById("selectedTotal").innerText = d.total;
         document.getElementById("selectedOverweight").innerText = d.obese;
 
         document.getElementById("selectedFactor").innerText = d.dashboardlabels;
@@ -472,6 +464,9 @@ function init() {
         document.getElementById("selectedTranslation").style.color =
           correlationColor;
         document.getElementById("selectedCorr").style.color = correlationColor;
+        document.getElementById("selectedMessage").style.color =
+          correlationColor;
+        document.getElementById("selectedCall").style.color = correlationColor;
 
         // Set the text color of the selected health factor
         document.getElementById("selectedFactor").style.color = factorColor;
@@ -491,13 +486,12 @@ function init() {
       // Scales
       var x = d3
         .scaleBand()
-        .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
-        .align(0) // This does nothing
+        .range([0, 2 * Math.PI])
         .domain(
           data.map(function (d) {
             return d.factor;
           })
-        ); // The domain of the X axis is the list of states.
+        ); // The domain of the X axis is the list of risk health factors.
       var y = d3
         .scaleRadial()
         .range([innerRadius, outerRadius]) // Domain will be define later.
@@ -508,11 +502,13 @@ function init() {
         .domain(["fruit", "vegatable", "alcohol", "smoke", "physical"])
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
-      // Add the bars
-      svgCirBar
-        .append("g")
-        .selectAll("path")
-        .data(data)
+      // Bind the data to the bars
+      var bars = svgCirBar.selectAll(".bars").data(data, function (d) {
+        return d.factor;
+      });
+
+      // Enter new bars
+      var newBars = bars
         .enter()
         .append("path")
         .attr("class", function (d) {
@@ -526,9 +522,7 @@ function init() {
           d3
             .arc()
             .innerRadius(innerRadius)
-            .outerRadius(function (d) {
-              return y(d["percent"]);
-            })
+            .outerRadius(innerRadius)
             .startAngle(function (d) {
               return x(d.factor);
             })
@@ -545,7 +539,39 @@ function init() {
           if (!selectedFactor) noHighlight(d.factor);
         })
         .on("click", handleClick);
-      // .on("click", handleClickDesciprtion);
+
+      // Update existing bars
+      bars
+        .merge(newBars)
+        .transition() // Apply the transition
+        .duration(1000) // Duration of the transition
+        .delay(function (d, i) {
+          return i * 100;
+        }) // Stagger the appearance of the bars
+        .attrTween("d", function (d) {
+          var interpolateOuterRadius = d3.interpolate(
+            isInitialLoad ? innerRadius : y(d.percent),
+            y(d.percent)
+          );
+          var interpolateEndAngle = d3.interpolate(
+            x(d.factor),
+            x(d.factor) + x.bandwidth()
+          );
+          return function (t) {
+            isInitialLoad = false;
+            return d3
+              .arc()
+              .innerRadius(innerRadius)
+              .outerRadius(interpolateOuterRadius(t))
+              .startAngle(x(d.factor))
+              .endAngle(interpolateEndAngle(t))
+              .padAngle(0.1)
+              .padRadius(innerRadius)();
+          };
+        });
+
+      // Exit and remove old bars
+      bars.exit().remove();
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -638,9 +664,9 @@ function init() {
           if (!selectedFactor) noHighlight(d.factor);
         })
         .on("click", handleClick);
-      // .on("click", handleClickDesciprtion);
     });
   }
+  // -------------------- ends of drawCircularBarPlot() -------------------- //
 
   // Initialize the plot with the default dataset
   drawCircularBarPlot();
@@ -650,6 +676,7 @@ function init() {
   window.updateDataset = updateDataset;
 
   // -------------------- Circular bar plot ends here -------------------- //
+  // -------------------- Gauge chart ends here -------------------- //
 
   // Initialize the gauge
   powerGauge = new Gauge({
@@ -675,7 +702,7 @@ function init() {
       return;
     }
     selectedFactor = null;
-    noHighlight();
+    // noHighlight();
   });
 }
 

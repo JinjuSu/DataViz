@@ -114,6 +114,11 @@
   font-weight: bold;
 }
 
+.correlation-body-msg {
+  font-size: 30px;
+  font-weight: bold;
+}
+
 .page-title {
   font-size: 64px;
   font-weight: semi-bold;
@@ -138,10 +143,6 @@
 .radio-tick input:checked {
   /* background-color: #d32a90; */
   background-color: #5721f0;
-}
-
-.radio-tick p {
-  font-size: 16px; /* Default font size */
 }
 
 .radio-tick.checked p {
