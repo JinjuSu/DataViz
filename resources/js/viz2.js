@@ -115,7 +115,7 @@ function init() {
     d3.select("#bubblePlot").select("svg").remove();
   }
 
-  // -------------------- Bubble plot's drawCircularBarPlot() when updated -------------------- //
+  // -------------------- drawCircularBarPlot() when updated, it draws both Bubble chart and Circular bar chart -------------------- //
 
   function drawCircularBarPlot() {
     // Clear the previous plot
@@ -450,13 +450,12 @@ function init() {
       // Scales
       var x = d3
         .scaleBand()
-        .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
-        .align(0) // This does nothing
+        .range([0, 2 * Math.PI])
         .domain(
           data.map(function (d) {
             return d.factor;
           })
-        ); // The domain of the X axis is the list of states.
+        ); // The domain of the X axis is the list of risk health factors.
       var y = d3
         .scaleRadial()
         .range([innerRadius, outerRadius]) // Domain will be define later.
@@ -468,10 +467,76 @@ function init() {
         .range(["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]);
 
       // Add the bars with animation
-      svgCirBar
-        .append("g")
-        .selectAll("path")
-        .data(data)
+      // svgCirBar
+      //   .append("g")
+      //   .selectAll("path")
+      //   .data(data)
+      //   .enter()
+      //   .append("path")
+      //   .attr("class", function (d) {
+      //     return "bars " + d.factor.replace(/ /g, "");
+      //   })
+      //   .attr("fill", function (d) {
+      //     return barColor(d.factor);
+      //   })
+      //   .attr(
+      //     "d",
+      //     d3
+      //       .arc() // Initial state with zero height and angle
+      //       .innerRadius(innerRadius)
+      //       .outerRadius(innerRadius) // Start with innerRadius for the animation
+      //       .outerRadius(function (d) {
+      //         return y(d["percent"]);
+      //       })
+      //       .startAngle(function (d) {
+      //         return x(d.factor);
+      //       })
+      //       .endAngle(function (d) {
+      //         return x(d.factor) + x.bandwidth();
+      //       })
+      //       .padAngle(0.1)
+      //       .padRadius(innerRadius)
+      //   )
+      //   .on("mouseover", function (d) {
+      //     if (!selectedFactor) highlight(d.factor);
+      //   })
+      //   .on("mouseleave", function (d) {
+      //     if (!selectedFactor) noHighlight(d.factor);
+      //   })
+      //   .on("click", handleClick)
+      //   .transition() // Apply the transition
+      //   .duration(1000) // Duration of the transition
+      //   .delay(function (d, i) {
+      //     return i * 100;
+      //   }) // Stagger the appearance of the bars
+      //   .attrTween("d", function (d) {
+      //     var interpolateOuterRadius = d3.interpolate(
+      //       innerRadius,
+      //       y(d.percent)
+      //     );
+      //     var interpolateEndAngle = d3.interpolate(
+      //       x(d.factor),
+      //       x(d.factor) + x.bandwidth()
+      //     );
+      //     return function (t) {
+      //       return d3
+      //         .arc()
+      //         .innerRadius(innerRadius)
+      //         .outerRadius(interpolateOuterRadius(t))
+      //         .startAngle(x(d.factor))
+      //         .endAngle(interpolateEndAngle(t))
+      //         .padAngle(0.1)
+      //         .padRadius(innerRadius)();
+      //     };
+      //   });
+
+      // Bind the data to the bars
+      var bars = svgCirBar.selectAll(".bars").data(data, function (d) {
+        return d.factor;
+      });
+
+      // Enter new bars
+      var newBars = bars
         .enter()
         .append("path")
         .attr("class", function (d) {
@@ -483,12 +548,9 @@ function init() {
         .attr(
           "d",
           d3
-            .arc() // Initial state with zero height and angle
+            .arc()
             .innerRadius(innerRadius)
-            .outerRadius(innerRadius) // Start with innerRadius for the animation
-            .outerRadius(function (d) {
-              return y(d["percent"]);
-            })
+            .outerRadius(innerRadius)
             .startAngle(function (d) {
               return x(d.factor);
             })
@@ -504,7 +566,11 @@ function init() {
         .on("mouseleave", function (d) {
           if (!selectedFactor) noHighlight(d.factor);
         })
-        .on("click", handleClick)
+        .on("click", handleClick);
+
+      // Update existing bars
+      bars
+        .merge(newBars)
         .transition() // Apply the transition
         .duration(1000) // Duration of the transition
         .delay(function (d, i) {
@@ -530,6 +596,9 @@ function init() {
               .padRadius(innerRadius)();
           };
         });
+
+      // Exit and remove old bars
+      bars.exit().remove();
 
       // Add the year label inside the inner radius
       let yearParts = year.split("\n");
@@ -622,9 +691,9 @@ function init() {
           if (!selectedFactor) noHighlight(d.factor);
         })
         .on("click", handleClick);
-      // .on("click", handleClickDesciprtion);
     });
   }
+  // -------------------- ends of drawCircularBarPlot() -------------------- //
 
   // Initialize the plot with the default dataset
   drawCircularBarPlot();
